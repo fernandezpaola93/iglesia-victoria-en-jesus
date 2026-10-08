@@ -24,6 +24,7 @@ const SORT_OPTIONS = [
 export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([])
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('Todos')
   const [sortBy, setSortBy] = useState('created_at_desc')
@@ -32,6 +33,32 @@ export default function MembersPage() {
   const pageSize = 20
 
   const supabase = createClient()
+
+  const handleExport = async () => {
+    setExporting(true)
+    try {
+      const params = new URLSearchParams()
+      if (search) params.set('search', search)
+      if (statusFilter && statusFilter !== 'Todos') params.set('status', statusFilter)
+      
+      const response = await fetch(`/api/members/export?${params.toString()}`)
+      if (!response.ok) throw new Error('Error al exportar')
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `miembros_${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (err: any) {
+      alert(err.message || 'Error al exportar')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   useEffect(() => {
     fetchMembers()
@@ -147,9 +174,9 @@ export default function MembersPage() {
             </div>
 
             {/* Export */}
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
               <Download className="h-4 w-4 mr-2" aria-hidden="true" />
-              Exportar
+              {exporting ? 'Exportando...' : 'Exportar'}
             </Button>
           </div>
         </CardBody>
