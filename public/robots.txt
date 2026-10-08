@@ -1,0 +1,18 @@
+# Robots.txt for Iglesia Victoria en Jesús
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://victoriaenjesus.org/sitemap.xml
+
+# Disallow private areas
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /login
+Disallow: /registro
+Disallow: /perfil
+Disallow: /configuracion
+
+# Crawl-delay
+Crawl-delay: 10
