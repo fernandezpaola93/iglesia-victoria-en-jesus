@@ -102,7 +102,7 @@ export default function NuevoMiembroPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/dashboard/miembros">
-            <Button variant="ghost" size="icon" className="h-10 w-10">
+            <Button variant="ghost" className="h-10 w-10">
               <ArrowLeft className="h-5 w-5" aria-hidden="true" />
             </Button>
           </Link>
