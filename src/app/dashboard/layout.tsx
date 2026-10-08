@@ -5,12 +5,17 @@ import { createBrowserClient } from '@supabase/ssr'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 
+interface Profile {
+  role: string
+}
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const [user, setUser] = useState<{ email?: string } | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const pathname = usePathname()
@@ -32,9 +37,16 @@ export default function DashboardLayout({
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       router.push('/login')
-    } else {
-      setUser(user)
+      return
     }
+    setUser(user)
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+    setProfile(data)
     setLoading(false)
   }
 
@@ -50,7 +62,7 @@ export default function DashboardLayout({
 
   if (!user) return null
 
-  const isAdmin = pathname.startsWith('/dashboard/admin')
+  const isAdmin = profile?.role === 'admin'
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -69,10 +81,16 @@ export default function DashboardLayout({
                 >
                   Inicio
                 </Link>
+                <Link
+                  href="/dashboard/miembros"
+                  className={`text-sm font-medium ${pathname.startsWith('/dashboard/miembros') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  Miembros
+                </Link>
                 {isAdmin && (
                   <Link
                     href="/dashboard/admin"
-                    className="text-sm font-medium text-blue-600"
+                    className={`text-sm font-medium ${pathname.startsWith('/dashboard/admin') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                   >
                     Admin
                   </Link>
