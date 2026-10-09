@@ -140,3 +140,46 @@ export type MilestoneType = SpiritualMilestone['milestone_type']
 export type NoteType = PastoralNote['note_type']
 export type EventType = Event['event_type']
 export type MinistryCategory = Ministry['category']
+
+export interface News {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  content: string
+  featured_image_url: string | null
+  category: 'General' | 'Eventos' | 'Anuncios' | 'Testimonios' | 'Oración' | 'Otro'
+  is_published: boolean
+  is_featured: boolean
+  published_at: string | null
+  author_id: string | null
+  created_at: string
+  updated_at: string
+  author?: Member
+}
+
+export interface Sermon {
+  id: string
+  title: string
+  slug: string
+  speaker: string
+  series: string | null
+  scripture_reference: string | null
+  description: string | null
+  content: string | null
+  audio_url: string | null
+  video_url: string | null
+  thumbnail_url: string | null
+  duration_minutes: number | null
+  sermon_date: string
+  is_published: boolean
+  is_featured: boolean
+  tags: string[]
+  author_id: string | null
+  created_at: string
+  updated_at: string
+  author?: Member
+}
+
+export type NewsCategory = News['category']
+export type SermonTag = string

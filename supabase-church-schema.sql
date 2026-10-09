@@ -185,6 +185,63 @@ create index idx_pastoral_notes_followup on public.pastoral_notes(follow_up_date
 create index idx_pastoral_notes_confidential on public.pastoral_notes(is_confidential);
 
 -- ============================================
+-- TABLA: news (Noticias/Anuncios)
+-- ============================================
+create table public.news (
+    id uuid primary key default uuid_generate_v4(),
+    title text not null,
+    slug text not null unique,
+    excerpt text,
+    content text not null,
+    featured_image_url text,
+    category text check (category in ('General', 'Eventos', 'Anuncios', 'Testimonios', 'Oración', 'Otro')) default 'General',
+    is_published boolean default false,
+    is_featured boolean default false,
+    published_at timestamp with time zone,
+    author_id uuid references public.members(id) on delete set null,
+    created_at timestamp with time zone default now(),
+    updated_at timestamp with time zone default now()
+);
+
+create index idx_news_slug on public.news(slug);
+create index idx_news_published on public.news(is_published, published_at desc);
+create index idx_news_category on public.news(category);
+create index idx_news_author on public.news(author_id);
+
+-- ============================================
+-- TABLA: sermons (Predicaciones)
+-- ============================================
+create table public.sermons (
+    id uuid primary key default uuid_generate_v4(),
+    title text not null,
+    slug text not null unique,
+    speaker text not null,
+    series text,
+    scripture_reference text,
+    description text,
+    content text,
+    audio_url text,
+    video_url text,
+    thumbnail_url text,
+    duration_minutes integer,
+    sermon_date date not null,
+    is_published boolean default false,
+    is_featured boolean default false,
+    tags text[],
+    author_id uuid references public.members(id) on delete set null,
+    created_at timestamp with time zone default now(),
+    updated_at timestamp with time zone default now()
+);
+
+create index idx_sermons_slug on public.sermons(slug);
+create index idx_sermons_date on public.sermons(sermon_date desc);
+create index idx_sermons_published on public.sermons(is_published, sermon_date desc);
+create index idx_sermons_series on public.sermons(series);
+create index idx_sermons_speaker on public.sermons(speaker);
+create index idx_sermons_author on public.sermons(author_id);
+create index idx_sermons_tags on public.sermons using gin(tags);
+
+-- ============================================
 -- TABLA: events (Eventos/Cultos - opcional para futuro)
 -- ============================================
 create table public.events (
@@ -199,7 +256,7 @@ create table public.events (
     requires_registration boolean default false,
     ministry_id uuid references public.ministries(id) on delete set null,
     is_recurring boolean default false,
-    recurrence_pattern jsonb,              -- Para eventos recurrentes: {freq: 'weekly', days: [1,4], until: '2025-12-31'}
+    recurrence_pattern jsonb,
     is_active boolean default true,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now()
@@ -311,6 +368,14 @@ create trigger update_events_updated_at
     before update on public.events
     for each row execute function public.update_updated_at_column();
 
+create trigger update_news_updated_at
+    before update on public.news
+    for each row execute function public.update_updated_at_column();
+
+create trigger update_sermons_updated_at
+    before update on public.sermons
+    for each row execute function public.update_updated_at_column();
+
 -- ============================================
 -- ROW LEVEL SECURITY (RLS)
 -- ============================================
@@ -323,6 +388,8 @@ alter table public.member_ministries enable row level security;
 alter table public.spiritual_milestones enable row level security;
 alter table public.pastoral_notes enable row level security;
 alter table public.events enable row level security;
+alter table public.news enable row level security;
+alter table public.sermons enable row level security;
 
 -- Políticas básicas (ajustar según roles de tu app)
 
@@ -404,6 +471,42 @@ create policy "Authenticated can view active events"
     on public.events for select
     to authenticated
     using (is_active = true);
+
+-- NEWS: Ver noticias publicadas
+create policy "Anyone can view published news"
+    on public.news for select
+    to authenticated
+    using (is_published = true);
+
+create policy "Admins can manage all news"
+    on public.news for all
+    to authenticated
+    using (exists (
+        select 1 from public.members m 
+        where m.id = auth.uid() and m.membership_status in ('Miembro activo')
+    ))
+    with check (exists (
+        select 1 from public.members m 
+        where m.id = auth.uid() and m.membership_status in ('Miembro activo')
+    ));
+
+-- SERMONS: Ver predicaciones publicadas
+create policy "Anyone can view published sermons"
+    on public.sermons for select
+    to authenticated
+    using (is_published = true);
+
+create policy "Admins can manage all sermons"
+    on public.sermons for all
+    to authenticated
+    using (exists (
+        select 1 from public.members m 
+        where m.id = auth.uid() and m.membership_status in ('Miembro activo')
+    ))
+    with check (exists (
+        select 1 from public.members m 
+        where m.id = auth.uid() and m.membership_status in ('Miembro activo')
+    ));
 
 -- ============================================
 -- STORAGE: Bucket para fotos de perfil y certificados
