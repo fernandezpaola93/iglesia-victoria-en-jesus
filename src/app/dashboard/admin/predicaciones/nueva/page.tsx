@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardBody, CardHeader, CardTitle, Button, Input, Textarea, Checkbox } from '@/components/ui'
+import { Card, CardBody, CardHeader, CardTitle, Button, Input, Textarea, Checkbox, VideoUpload } from '@/components/ui'
 
 interface FormData {
   title: string
@@ -247,7 +247,7 @@ export default function NewSermonPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="audio_url" className="block text-sm font-medium text-primary-700 mb-1">
-                    URL de Audio (MP3)
+                    URL de Audio (MP3) o subir archivo
                   </label>
                   <Input
                     id="audio_url"
@@ -257,10 +257,16 @@ export default function NewSermonPage() {
                     placeholder="https://ejemplo.com/predicacion.mp3"
                     className="w-full"
                   />
+                  <VideoUpload
+                    currentUrl={formData.audio_url}
+                    onUploadComplete={(url) => setFormData(prev => ({ ...prev, audio_url: url }))}
+                    accept="audio/*,video/*"
+                    maxSizeMB={100}
+                  />
                 </div>
                 <div>
                   <label htmlFor="video_url" className="block text-sm font-medium text-primary-700 mb-1">
-                    URL de Video (YouTube, Vimeo, etc.)
+                    URL de Video (YouTube, Vimeo, etc.) o subir archivo
                   </label>
                   <Input
                     id="video_url"
@@ -269,6 +275,11 @@ export default function NewSermonPage() {
                     onChange={handleChange}
                     placeholder="https://youtube.com/watch?v=..."
                     className="w-full"
+                  />
+                  <VideoUpload
+                    currentUrl={formData.video_url}
+                    onUploadComplete={(url) => setFormData(prev => ({ ...prev, video_url: url }))}
+                    maxSizeMB={500}
                   />
                 </div>
               </div>
