@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Church, AlertCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -14,9 +13,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const message = searchParams.get('message')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -40,8 +36,8 @@ function LoginForm() {
       }
 
       setSuccess('¡Bienvenido! Redirigiendo...')
-      router.push('/dashboard')
-      router.refresh()
+      // Usar window.location.href para forzar recarga y que middleware lea cookies
+      window.location.href = '/dashboard'
     } catch (err: any) {
       setError('Error de conexión. Intenta de nuevo.')
       setLoading(false)
@@ -66,13 +62,6 @@ function LoginForm() {
             <CardDescription>Ingresa tus credenciales para continuar</CardDescription>
           </CardHeader>
           <CardBody className="p-8">
-            {message && (
-              <div className="mb-6 flex items-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200 text-green-700" role="status">
-                <CheckCircle className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
-                <p className="text-sm">{message}</p>
-              </div>
-            )}
-
             {error && (
               <div className="mb-6 flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700" role="alert">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" aria-hidden="true" />

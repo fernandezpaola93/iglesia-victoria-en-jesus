@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Church, Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Shield, Phone, Users, Calendar, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -10,7 +9,6 @@ import { Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
 
 export default function RegisterPage() {
-  const router = useRouter()
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -69,9 +67,12 @@ export default function RegisterPage() {
       setLoading(false)
       
       if (data.session) {
-        setTimeout(() => router.push('/dashboard'), 2000)
+        // Usar window.location.href para forzar recarga y leer cookies
+        window.location.href = '/dashboard'
       } else {
-        setTimeout(() => router.push('/login?message=Cuenta creada. Revisa tu email.'), 3000)
+        setTimeout(() => {
+          window.location.href = '/login?message=Cuenta creada. Revisa tu email.'
+        }, 3000)
       }
     } catch (err: any) {
       setError('Error de conexión. Intenta de nuevo.')
