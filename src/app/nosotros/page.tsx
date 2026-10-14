@@ -199,11 +199,11 @@ export default async function AboutPage() {
             Pastores y líderes comprometidos con servir a la congregación.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex gap-6 overflow-x-auto pb-6 -mx-4 px-4 snap-x snap-mandatory">
           {leaders.length === 0 ? (
             <>
               {[1,2,3,4].map((_, index) => (
-                <Card key={index} className="bg-primary-900 border-primary-800 text-center animate-pulse">
+                <Card key={index} className="bg-primary-900 border-primary-800 text-center animate-pulse flex-shrink-0 snap-center w-48 sm:w-56">
                   <CardBody className="p-8">
                     <div className="h-24 w-24 rounded-full bg-primary-800 mx-auto mb-4" />
                     <div className="h-4 w-3/4 bg-primary-800 mx-auto mb-2 rounded" />
@@ -214,16 +214,16 @@ export default async function AboutPage() {
             </>
           ) : (
             leaders.map((leader, index) => (
-              <Card key={leader.id} className="bg-primary-900 border-primary-800 text-center">
-                <CardBody className="p-8">
+              <Card key={leader.id} className="bg-primary-900 border-primary-800 text-center flex-shrink-0 snap-center w-48 sm:w-56">
+                <CardBody className="p-6">
                   <Avatar
                     src={leader.profile_photo_url}
                     alt={`${leader.first_name} ${leader.last_name}`}
                     size="xl"
-                    className="mx-auto mb-4"
+                    className="mx-auto mb-3"
                   />
-                  <h3 className="font-display text-lg font-semibold mb-1">{leader.leadership_role}</h3>
-                  <p className="text-accent-400 text-sm">{leader.first_name} {leader.last_name}</p>
+                  <h3 className="font-display text-sm sm:text-base font-semibold mb-1 leading-tight">{leader.leadership_role}</h3>
+                  <p className="text-accent-400 text-xs sm:text-sm">{leader.first_name} {leader.last_name}</p>
                 </CardBody>
               </Card>
             ))
