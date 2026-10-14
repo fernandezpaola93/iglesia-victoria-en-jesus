@@ -183,3 +183,24 @@ export interface Sermon {
 
 export type NewsCategory = News['category']
 export type SermonTag = string
+
+export type LeadershipRole = 
+  | 'Pastor Principal' 
+  | 'Pastor Asociado' 
+  | 'Pastor de Jóvenes' 
+  | 'Pastor de Niños' 
+  | 'Diácono' 
+  | 'Diaconisa' 
+  | 'Secretario' 
+  | 'Secretaria' 
+  | 'Tesorero' 
+  | 'Tesorera' 
+  | 'Presbítero' 
+  | 'Anciano' 
+  | 'Otro'
+
+export interface Leader extends Member {
+  leadership_role: LeadershipRole
+  leadership_order: number
+  is_active_leader: boolean
+}

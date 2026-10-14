@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card'
 import Link from 'next/link'
+import { createServerClient } from '@/lib/supabase/server'
+import { Avatar } from '@/components/ui/Avatar'
 
 const beliefs = [
   { icon: BookOpen, title: 'La Biblia', description: 'Creemos que la Biblia es la Palabra inspirada de Dios, infalible y autoritativa para la fe y la vida.' },
@@ -22,7 +24,25 @@ const values = [
   { icon: Church, title: 'Generosidad', description: 'Dar con gozo: tiempo, talentos y recursos para el Reino.' },
 ]
 
-export default function AboutPage() {
+async function getLeaders() {
+  const supabase = createServerClient()
+  const { data, error } = await supabase
+    .from('members')
+    .select('id, first_name, last_name, profile_photo_url, leadership_role, leadership_order')
+    .not('leadership_role', 'is', null)
+    .eq('is_active_leader', true)
+    .order('leadership_order', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching leaders:', error)
+    return []
+  }
+  return data || []
+}
+
+export default async function AboutPage() {
+  const leaders = await getLeaders()
+
   return (
     <div className="space-y-24">
       {/* Hero */}
@@ -180,25 +200,34 @@ export default function AboutPage() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { name: 'Pastor', role: 'Pastor Martin Almonetti', desc: 'Fundador y pastor principal desde 2024' },
-            { name: 'Diaconiza', role: 'Livia Acosta' },
-            { name: 'Diacono', role: 'Rafael Martinez' },
-            { name: 'Diacono', role: 'Edoard Lazo' },
-            { name: 'Diacono', role: 'Juan Oropeza' },
-            { name: 'Secretaria', role: 'Eingels Cassibe' },
-          ].map((leader, index) => (
-            <Card key={index} className="bg-primary-900 border-primary-800 text-center">
-              <CardBody className="p-8">
-                <div className="h-24 w-24 rounded-full bg-primary-800 mx-auto mb-4 flex items-center justify-center">
-                  <User className="h-12 w-12 text-primary-500" aria-hidden="true" />
-                </div>
-                <h3 className="font-display text-lg font-semibold mb-1">{leader.role}</h3>
-                <p className="text-accent-400 text-sm mb-3">{leader.name}</p>
-                <p className="text-primary-400 text-sm">{leader.desc}</p>
-              </CardBody>
-            </Card>
-          ))}
+          {leaders.length === 0 ? (
+            <>
+              {[1,2,3,4].map((_, index) => (
+                <Card key={index} className="bg-primary-900 border-primary-800 text-center animate-pulse">
+                  <CardBody className="p-8">
+                    <div className="h-24 w-24 rounded-full bg-primary-800 mx-auto mb-4" />
+                    <div className="h-4 w-3/4 bg-primary-800 mx-auto mb-2 rounded" />
+                    <div className="h-3 w-1/2 bg-primary-800 mx-auto rounded" />
+                  </CardBody>
+                </Card>
+              ))}
+            </>
+          ) : (
+            leaders.map((leader, index) => (
+              <Card key={leader.id} className="bg-primary-900 border-primary-800 text-center">
+                <CardBody className="p-8">
+                  <Avatar
+                    src={leader.profile_photo_url}
+                    alt={`${leader.first_name} ${leader.last_name}`}
+                    size="xl"
+                    className="mx-auto mb-4"
+                  />
+                  <h3 className="font-display text-lg font-semibold mb-1">{leader.leadership_role}</h3>
+                  <p className="text-accent-400 text-sm">{leader.first_name} {leader.last_name}</p>
+                </CardBody>
+              </Card>
+            ))
+          )}
         </div>
       </section>
 
