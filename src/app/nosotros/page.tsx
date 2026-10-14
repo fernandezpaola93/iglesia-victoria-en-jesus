@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card'
 import Link from 'next/link'
-import { createServerClient } from '@/lib/supabase/server'
 import { Avatar } from '@/components/ui/Avatar'
 
 export const dynamic = 'force-dynamic'
@@ -27,14 +26,12 @@ const values = [
 ]
 
 async function getLeaders() {
-  const supabase = createServerClient()
-  const { data, error } = await supabase
-    .from('members')
-    .select('id, first_name, last_name, profile_photo_url, leadership_role, leadership_order')
-    .not('leadership_role', 'is', null)
-    .eq('is_active_leader', true)
-    .order('leadership_order', { ascending: true })
-
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://iglesia-victoria-en-jesus.onrender.com'
+  const res = await fetch(`${siteUrl}/api/leaders`, {
+    next: { revalidate: 60 },
+    headers: { 'Content-Type': 'application/json' },
+  })
+  const { data, error } = await res.json()
   if (error) {
     console.error('Error fetching leaders:', error)
     return []
@@ -215,7 +212,7 @@ export default async function AboutPage() {
               ))}
             </>
           ) : (
-            leaders.map((leader, index) => (
+            leaders.map((leader: { id: string; first_name: string; last_name: string; profile_photo_url: string | null; leadership_role: string }, index: number) => (
               <Card key={leader.id} className="bg-primary-900 border-primary-800 text-center flex-shrink-0 snap-center w-48 sm:w-56">
                 <CardBody className="p-6">
                   <Avatar

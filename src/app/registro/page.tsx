@@ -1,7 +1,5 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -10,8 +8,6 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
-import { createClient } from '@/lib/supabase/client'
-import { cn } from '@/lib/utils'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -27,8 +23,6 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
-  const supabase = createClient()
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
     if (error) setError(null)
@@ -37,6 +31,7 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setSuccess(null)
 
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden')
@@ -50,25 +45,37 @@ export default function RegisterPage() {
 
     setLoading(true)
 
-    const { error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
           full_name: formData.full_name,
           phone: formData.phone,
-        },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
-      },
-    })
+        }),
+      })
 
-    if (error) {
-      setError(error.message)
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Error al crear la cuenta')
+        setLoading(false)
+        return
+      }
+
+      setSuccess(data.message || '¡Cuenta creada! Revisa tu email para confirmar.')
       setLoading(false)
-    } else {
-      setSuccess('¡Cuenta creada! Revisa tu email para confirmar tu cuenta.')
+      
+      if (data.session) {
+        setTimeout(() => router.push('/dashboard'), 2000)
+      } else {
+        setTimeout(() => router.push('/login?message=Cuenta creada. Revisa tu email.'), 3000)
+      }
+    } catch (err: any) {
+      setError('Error de conexión. Intenta de nuevo.')
       setLoading(false)
-      setTimeout(() => router.push('/login'), 3000)
     }
   }
 
