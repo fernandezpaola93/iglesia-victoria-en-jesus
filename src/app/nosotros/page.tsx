@@ -181,10 +181,12 @@ export default function AboutPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { name: 'Pastor Principal', role: 'Pastor Juan Pérez', desc: 'Fundador y pastor principal desde 2003' },
-            { name: 'Pastora Asociada', role: 'Pastora María García', desc: 'Ministerio de familias y consejería' },
-            { name: 'Pastor de Jóvenes', role: 'Pastor Carlos López', desc: 'Juventud, jóvenes adultos y discipulado' },
-            { name: 'Pastor de Alabanza', role: 'Pastor Andrés Ruiz', desc: 'Adoración, artes creativas y medios' },
+            { name: 'Pastor', role: 'Pastor Martin Almonetti', desc: 'Fundador y pastor principal desde 2024' },
+            { name: 'Diaconiza', role: 'Livia Acosta' },
+            { name: 'Diacono', role: 'Rafael Martinez' },
+            { name: 'Diacono', role: 'Edoard Lazo' },
+            { name: 'Diacono', role: 'Juan Oropeza' },
+            { name: 'Secretaria', role: 'Eingels Cassibe' },
           ].map((leader, index) => (
             <Card key={index} className="bg-primary-900 border-primary-800 text-center">
               <CardBody className="p-8">
