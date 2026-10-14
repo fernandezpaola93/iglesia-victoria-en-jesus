@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { createServerClient } from '@/lib/supabase/server'
 import { Avatar } from '@/components/ui/Avatar'
 
+export const dynamic = 'force-dynamic'
+
 const beliefs = [
   { icon: BookOpen, title: 'La Biblia', description: 'Creemos que la Biblia es la Palabra inspirada de Dios, infalible y autoritativa para la fe y la vida.' },
   { icon: Heart, title: 'La Trinidad', description: 'Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo, co-iguales y co-eternos.' },
