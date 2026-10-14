@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Menu, X, Church, LogOut, User, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -21,11 +21,18 @@ export function Header() {
   const { user, signOut, loading } = useAuth()
 
   // Handle scroll effect
-  if (typeof window !== 'undefined') {
-    window.addEventListener('scroll', () => {
+  useEffect(() => {
+    const handleScroll = () => {
       setScrolled(window.scrollY > 20)
-    })
-  }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [window.location.pathname])
 
   return (
     <header className={cn(
@@ -35,7 +42,7 @@ export function Header() {
       <nav className="container-custom" aria-label="Navegación principal">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-primary-900" aria-label="Ir al inicio">
+          <Link href="/" className="flex items-center gap-2 text-primary-900 flex-shrink-0" aria-label="Ir al inicio">
             <Church className="h-8 w-8 text-accent-500" aria-hidden="true" />
             <span className="font-display font-semibold text-xl hidden sm:block">
               Victoria en Jesús
@@ -43,21 +50,21 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6 md:gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-primary-700 hover:text-primary-900 transition-colors"
+                className="text-sm font-medium text-primary-700 hover:text-primary-900 transition-colors whitespace-nowrap"
               >
                 {item.label}
               </Link>
             ))}
             
             {user ? (
-              <div className="flex items-center gap-4">
-                <Link href="/dashboard" className="text-sm font-medium text-primary-700 hover:text-primary-900">
-                  <LayoutDashboard className="inline-block h-4 w-4 mr-1" /> Panel
+              <div className="flex items-center gap-3 md:gap-4">
+                <Link href="/dashboard" className="text-sm font-medium text-primary-700 hover:text-primary-900 hidden sm:inline-flex items-center gap-1">
+                  <LayoutDashboard className="inline-block h-4 w-4" /> Panel
                 </Link>
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5 text-primary-500" />
@@ -67,7 +74,7 @@ export function Header() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3">
                 <Link href="/login">
                   <Button variant="ghost" size="sm">Iniciar sesión</Button>
                 </Link>
@@ -80,7 +87,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg text-primary-700 hover:bg-primary-100"
+            className="md:hidden p-2 rounded-lg text-primary-700 hover:bg-primary-100 flex-shrink-0"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
@@ -92,35 +99,35 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div id="mobile-menu" className="md:hidden py-4 border-t border-primary-100 animate-slide-down">
-            <div className="flex flex-col gap-4">
+          <div id="mobile-menu" className="md:hidden py-4 border-t border-primary-100 animate-slide-down bg-white">
+            <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-base font-medium text-primary-700 hover:text-primary-900 px-2 py-2"
+                  className="text-base font-medium text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-primary-100 flex flex-col gap-3">
+              <div className="pt-2 border-t border-primary-100 flex flex-col gap-3">
                 {user ? (
                   <>
-                    <Link href="/dashboard" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-2" onClick={() => setMobileMenuOpen(false)}>
+                    <Link href="/dashboard" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                       <LayoutDashboard className="h-5 w-5" /> Panel de control
                     </Link>
-                    <Button variant="outline" className="w-full justify-start" onClick={signOut}>
+                    <Button variant="outline" className="w-full justify-start px-2 py-3" onClick={signOut}>
                       <LogOut className="h-4 w-4 mr-2" /> Cerrar sesión
                     </Button>
                   </>
                 ) : (
                   <>
                     <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" className="w-full justify-start">Iniciar sesión</Button>
+                      <Button variant="outline" className="w-full justify-start px-2 py-3">Iniciar sesión</Button>
                     </Link>
                     <Link href="/registro" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="primary" className="w-full justify-start">Registrarse</Button>
+                      <Button variant="primary" className="w-full justify-start px-2 py-3">Registrarse</Button>
                     </Link>
                   </>
                 )}

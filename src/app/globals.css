@@ -40,6 +40,16 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-medium tracking-tight;
   }
+  
+  /* Better touch targets */
+  button, a, [role="button"], input, select, textarea {
+    @apply touch-manipulation;
+  }
+  
+  /* Prevent horizontal scroll */
+  html, body {
+    @apply overflow-x-hidden;
+  }
 }
 
 @layer components {
@@ -89,6 +99,10 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
   .section {
     @apply py-16 sm:py-24 lg:py-32;
   }
@@ -105,5 +119,29 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  /* Responsive text utilities */
+  .text-responsive-xl {
+    @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl;
+  }
+  .text-responsive-lg {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+  .text-responsive-md {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+  .text-responsive-sm {
+    @apply text-base sm:text-lg lg:text-xl;
+  }
+  
+  /* Touch-friendly tap targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Better focus states */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
   }
 }

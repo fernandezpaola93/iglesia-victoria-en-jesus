@@ -31,30 +31,30 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer className="bg-primary-950 text-primary-100" role="contentinfo">
-      <div className="container-custom py-16 lg:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+      <div className="container-custom py-12 lg:py-24 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 sm:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-6" aria-label="Victoria en Jesús - Inicio">
               <Church className="h-10 w-10 text-accent-400" aria-hidden="true" />
-              <span className="font-display font-semibold text-2xl text-white">
+              <span className="font-display font-semibold text-xl sm:text-2xl text-white">
                 Victoria en Jesús
               </span>
             </Link>
-            <p className="text-primary-300 mb-6 max-w-xs leading-relaxed">
+            <p className="text-primary-300 mb-6 max-w-xs sm:max-w-sm leading-relaxed text-sm sm:text-base">
               Una comunidad de fe centrada en Cristo, comprometida con el Evangelio y el servicio a nuestra ciudad.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary-400 hover:text-accent-400 transition-colors"
+                  className="text-primary-400 hover:text-accent-400 transition-colors p-2"
                   aria-label={social.label}
                 >
-                  <social.icon className="h-5 w-5" aria-hidden="true" />
+                  <social.icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                 </a>
               ))}
             </div>
@@ -62,13 +62,13 @@ export function Footer() {
 
           {/* Links - Iglesia */}
           <nav aria-label="Enlaces de la iglesia">
-            <h3 className="font-display font-medium text-white mb-4">Iglesia</h3>
-            <ul className="space-y-3">
+            <h3 className="font-display font-medium text-white mb-3 sm:mb-4">Iglesia</h3>
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.iglesia.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-primary-300 hover:text-accent-400 transition-colors"
+                    className="text-primary-300 hover:text-accent-400 transition-colors text-sm sm:text-base"
                   >
                     {link.label}
                   </Link>
@@ -79,13 +79,13 @@ export function Footer() {
 
           {/* Links - Recursos */}
           <nav aria-label="Recursos">
-            <h3 className="font-display font-medium text-white mb-4">Recursos</h3>
-            <ul className="space-y-3">
+            <h3 className="font-display font-medium text-white mb-3 sm:mb-4">Recursos</h3>
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.recursos.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-primary-300 hover:text-accent-400 transition-colors"
+                    className="text-primary-300 hover:text-accent-400 transition-colors text-sm sm:text-base"
                   >
                     {link.label}
                   </Link>
@@ -96,21 +96,21 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="font-display font-medium text-white mb-4">Contacto</h3>
-            <address className="not-italic space-y-3 text-primary-300">
-              <div className="flex items-start gap-3">
+            <h3 className="font-display font-medium text-white mb-3 sm:mb-4">Contacto</h3>
+            <address className="not-italic space-y-2 sm:space-y-3 text-primary-300 text-sm sm:text-base">
+              <div className="flex items-start gap-2 sm:gap-3">
                 <MapPin className="h-5 w-5 text-accent-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <p>Av. Principal #123, Centro<br />Ciudad, Estado, C.P. 00000</p>
+                <p className="leading-relaxed">Av. Principal #123, Centro<br />Ciudad, Estado, C.P. 00000</p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Phone className="h-5 w-5 text-accent-400 flex-shrink-0" aria-hidden="true" />
                 <a href="tel:+525512345678" className="hover:text-accent-400 transition-colors">
                   +52 55 1234 5678
                 </a>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Mail className="h-5 w-5 text-accent-400 flex-shrink-0" aria-hidden="true" />
-                <a href="mailto:info@victoriaenjesus.org" className="hover:text-accent-400 transition-colors">
+                <a href="mailto:info@victoriaenjesus.org" className="hover:text-accent-400 transition-colors truncate block max-w-xs">
                   info@victoriaenjesus.org
                 </a>
               </div>
@@ -119,12 +119,12 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-primary-800">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-primary-400 text-sm">
+        <div className="mt-8 lg:mt-12 pt-6 lg:pt-8 border-t border-primary-800">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <p className="text-primary-400 text-xs sm:text-sm text-center sm:text-left">
               © {new Date().getFullYear()} Iglesia Victoria en Jesús. Todos los derechos reservados.
             </p>
-            <div className="flex items-center gap-4 text-sm text-primary-400">
+            <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-primary-400">
               <Link href="/privacidad" className="hover:text-accent-400 transition-colors">Política de Privacidad</Link>
               <span aria-hidden="true">·</span>
               <Link href="/terminos" className="hover:text-accent-400 transition-colors">Términos de Uso</Link>
