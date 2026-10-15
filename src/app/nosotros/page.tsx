@@ -31,6 +31,12 @@ async function getLeaders() {
     next: { revalidate: 60 },
     headers: { 'Content-Type': 'application/json' },
   })
+
+  if (!res.ok || !res.headers.get('content-type')?.includes('application/json')) {
+    console.error('Error fetching leaders:', res.status)
+    return []
+  }
+
   const { data, error } = await res.json()
   if (error) {
     console.error('Error fetching leaders:', error)

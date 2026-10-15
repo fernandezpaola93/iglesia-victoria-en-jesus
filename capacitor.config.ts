@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'io.victoriaenjesus',
   appName: 'Victoria en Jesús',
-  webDir: '.next',
+  webDir: 'capacitor-web',
   server: {
     url: 'https://iglesia-victoria-en-jesus.onrender.com',
     cleartext: true,
