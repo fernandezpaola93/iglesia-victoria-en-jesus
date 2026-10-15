@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { Menu, X, Church, LogOut, User, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -19,6 +20,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { user, signOut, loading } = useAuth()
+  const pathname = usePathname()
 
   // Handle scroll effect
   useEffect(() => {
@@ -32,7 +34,7 @@ export function Header() {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false)
-  }, [window.location.pathname])
+  }, [pathname])
 
   return (
     <header className={cn(
