@@ -6,6 +6,7 @@ import { Church, AlertCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
+import { createClient } from '@/lib/supabase/client'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -21,22 +22,16 @@ function LoginForm() {
     setLoading(true)
 
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error || 'Error al iniciar sesión')
+      if (error) {
+        setError(error.message)
         setLoading(false)
         return
       }
 
       setSuccess('¡Bienvenido! Redirigiendo...')
-      // Usar window.location.href para forzar recarga y que middleware lea cookies
       window.location.href = '/dashboard'
     } catch (err: any) {
       setError('Error de conexión. Intenta de nuevo.')
