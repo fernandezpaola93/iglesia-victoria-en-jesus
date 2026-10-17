@@ -29,7 +29,14 @@ export default function PastoresPage() {
         {pastores.map((pastor) => (
           <Card key={pastor.id}>
             <CardBody className="p-6 text-center">
-              <Avatar src={pastor.profile_photo_url} alt={pastor.first_name} size="xl" className="mx-auto mb-4" />
+              <Avatar 
+                src={pastor.profile_photo_url} 
+                alt={`${pastor.first_name} ${pastor.last_name}`}
+                firstName={pastor.first_name}
+                lastName={pastor.last_name}
+                size="xl" 
+                className="mx-auto mb-4" 
+              />
               <h2 className="text-xl font-semibold">{pastor.first_name} {pastor.last_name}</h2>
               <p className="text-accent-600">{pastor.leadership_role}</p>
             </CardBody>
