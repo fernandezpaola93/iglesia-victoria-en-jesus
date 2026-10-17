@@ -1,3 +1,5 @@
+'use client'
+
 import { HTMLAttributes, forwardRef, useState } from 'react'
 import { cn, getInitials } from '@/lib/utils'
 
