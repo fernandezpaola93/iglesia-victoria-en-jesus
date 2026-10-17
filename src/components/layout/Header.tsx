@@ -127,6 +127,12 @@ export function Header() {
                         <Link href="/dashboard/miembros" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                           Miembros
                         </Link>
+                        <Link href="/dashboard/admin/noticias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                          Noticias
+                        </Link>
+                        <Link href="/dashboard/admin/predicaciones" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                          Predicaciones
+                        </Link>
                         <Link href="/dashboard/admin/estudios" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                           Estudios Bíblicos
                         </Link>
