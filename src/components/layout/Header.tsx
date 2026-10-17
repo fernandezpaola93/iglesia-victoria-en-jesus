@@ -101,7 +101,7 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div id="mobile-menu" className="md:hidden py-4 border-t border-primary-100 animate-slide-down bg-white">
+          <div id="mobile-menu" className="md:hidden py-4 border-t border-primary-100 animate-slide-down bg-white max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link
