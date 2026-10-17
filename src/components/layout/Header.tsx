@@ -87,9 +87,9 @@ export function Header() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - ALWAYS VISIBLE */}
           <button
-            className="md:hidden p-2 rounded-lg text-primary-700 hover:bg-primary-100 flex-shrink-0"
+            className="p-2 rounded-lg text-primary-700 hover:bg-primary-100 flex-shrink-0"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
@@ -99,9 +99,9 @@ export function Header() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - ALWAYS AVAILABLE */}
         {mobileMenuOpen && (
-          <div id="mobile-menu" className="md:hidden py-4 border-t border-primary-100 animate-slide-down bg-white max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div id="mobile-menu" className="absolute top-16 left-0 right-0 py-4 border-t border-primary-100 animate-slide-down bg-white max-h-[calc(100vh-4rem)] overflow-y-auto z-50">
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link
