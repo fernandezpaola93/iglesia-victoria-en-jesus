@@ -127,11 +127,14 @@ export function Header() {
                         <Link href="/dashboard/miembros" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                           Miembros
                         </Link>
-                        <Link href="/dashboard/admin/noticias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Noticias
+                        <Link href="/dashboard/admin/estudios" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                          Estudios Bíblicos
                         </Link>
-                        <Link href="/dashboard/admin/predicaciones" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Predicaciones
+                        <Link href="/dashboard/admin/devocionales" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                          Devocionales
+                        </Link>
+                        <Link href="/dashboard/admin/creencias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                          Creencias
                         </Link>
                       </div>
                     )}
