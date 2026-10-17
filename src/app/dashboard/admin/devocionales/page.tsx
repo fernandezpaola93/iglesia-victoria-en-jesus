@@ -18,14 +18,28 @@ export default function AdminDevocionalesPage() {
     const formData = new FormData(e.target as HTMLFormElement)
     const data = Object.fromEntries(formData.entries())
 
-    await supabase.from('sermons').insert({
-      ...data,
+    const title = data.title as string
+    const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
+
+    const { error } = await supabase.from('sermons').insert({
+      title: title,
+      content: data.content,
+      speaker: data.speaker || 'Anónimo', // Campo obligatorio
+      sermon_date: data.sermon_date || new Date().toISOString().split('T')[0], // Campo obligatorio
+      slug: slug,
       type: 'devocional',
       is_published: true
     })
+
+    if (error) {
+      console.error("Error al guardar:", error);
+      alert('Error al guardar: ' + error.message)
+    } else {
+      alert('Guardado correctamente')
+      router.refresh()
+    }
     
     setLoading(false)
-    router.refresh()
   }
 
   return (
@@ -35,6 +49,8 @@ export default function AdminDevocionalesPage() {
         <CardBody>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input name="title" placeholder="Título del devocional" required />
+            <Input name="speaker" placeholder="Autor" required />
+            <Input name="sermon_date" type="date" required />
             <Textarea name="content" placeholder="Contenido del devocional" />
             <Button type="submit" loading={loading}>Guardar Devocional</Button>
           </form>
