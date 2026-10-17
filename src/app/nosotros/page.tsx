@@ -224,6 +224,8 @@ export default async function AboutPage() {
                   <Avatar
                     src={leader.profile_photo_url}
                     alt={`${leader.first_name} ${leader.last_name}`}
+                    firstName={leader.first_name}
+                    lastName={leader.last_name}
                     size="xl"
                     className="mx-auto mb-3"
                   />
