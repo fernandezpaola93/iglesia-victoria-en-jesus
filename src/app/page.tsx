@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Church, Users, Heart, BookOpen, Music, Calendar, ArrowRight, MapPin, Clock } from 'lucide-react'
+import { Church, Users, Heart, BookOpen, Music, Calendar, ArrowRight, MapPin, Clock, Smartphone } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardBody } from '@/components/ui/Card'
 
@@ -80,6 +80,12 @@ export default function HomePage() {
               <Link href="/nosotros">
                 <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white/10">
                   Conócenos más
+                </Button>
+              </Link>
+              <Link href="/descargar-app">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white/10">
+                  <Smartphone className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Descargar App
                 </Button>
               </Link>
             </div>
