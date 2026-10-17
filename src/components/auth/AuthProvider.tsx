@@ -34,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .eq('id', session.user.id)
           .single()
         
+        console.log("DEBUG: Rol recibido desde Supabase:", data?.role);
         setIsAdmin(data?.role === 'admin')
       } else {
         setIsAdmin(false)
