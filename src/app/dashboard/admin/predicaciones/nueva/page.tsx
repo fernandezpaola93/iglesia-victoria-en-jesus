@@ -77,31 +77,48 @@ export default function NewSermonPage() {
     setLoading(true)
     setError(null)
 
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Usuario no autenticado')
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error('Usuario no autenticado')
+        
+        console.log("DEBUG: Usuario ID:", user.id);
 
-      const tagsArray = formData.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(t => t.length > 0)
+        const tagsArray = formData.tags
+          .split(',')
+          .map(t => t.trim())
+          .filter(t => t.length > 0)
 
-      const { error } = await supabase.from('sermons').insert({
-        ...formData,
-        duration_minutes: formData.duration_minutes ? parseInt(formData.duration_minutes) : null,
-        tags: tagsArray,
-        author_id: user.id,
-      })
+        // Verificar si existe el perfil primero
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', user.id)
+          .single();
 
-      if (error) throw error
+        if (profileError || !profile) {
+          throw new Error('El usuario no tiene un perfil en la tabla profiles. Asegúrate de que el trigger de creación de perfil funcione.');
+        }
 
-      router.push('/dashboard/admin/predicaciones')
-      router.refresh()
-    } catch (err: any) {
-      setError(err.message || 'Error al crear la predicación')
-    } finally {
-      setLoading(false)
-    }
+        const { error } = await supabase.from('sermons').insert({
+          ...formData,
+          duration_minutes: formData.duration_minutes ? parseInt(formData.duration_minutes) : null,
+          tags: tagsArray,
+          author_id: user.id,
+        })
+
+        if (error) {
+          console.error("DEBUG: Error al insertar sermón:", error);
+          throw error;
+        }
+
+        router.push('/dashboard/admin/predicaciones')
+        router.refresh()
+      } catch (err: any) {
+        console.error("DEBUG: Error completo:", err);
+        setError(err.message || 'Error al crear la predicación')
+      } finally {
+        setLoading(false)
+      }
   }
 
   return (
