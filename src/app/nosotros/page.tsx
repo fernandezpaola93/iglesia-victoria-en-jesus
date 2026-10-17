@@ -218,7 +218,9 @@ export default async function AboutPage() {
               ))}
             </>
           ) : (
-            leaders.map((leader: { id: string; first_name: string; last_name: string; profile_photo_url: string | null; leadership_role: string }, index: number) => (
+            leaders.map((leader: { id: string; first_name: string; last_name: string; profile_photo_url: string | null; leadership_role: string }, index: number) => {
+            console.log("DEBUG: Líder a renderizar:", leader);
+            return (
               <Card key={leader.id} className="bg-primary-900 border-primary-800 text-center flex-shrink-0 snap-center w-48 sm:w-56">
                 <CardBody className="p-6">
                   <Avatar
@@ -233,7 +235,8 @@ export default async function AboutPage() {
                   <p className="text-accent-400 text-xs sm:text-sm">{leader.first_name} {leader.last_name}</p>
                 </CardBody>
               </Card>
-            ))
+            )
+          })
           )}
         </div>
       </section>
