@@ -60,6 +60,7 @@ export default function AdminSermonsPage() {
           *,
           author:members!author_id (first_name, last_name)
         `)
+        .or('type.eq.predicacion,type.is.null')
         .order('sermon_date', { ascending: false })
 
       if (error) throw error
