@@ -120,7 +120,10 @@ export function Header() {
                       <LayoutDashboard className="h-5 w-5" /> Panel de control
                     </Link>
                     {isAdmin && (
-                      <>
+                      <div className="flex flex-col gap-2">
+                        <Link href="/dashboard/admin" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                          <LayoutDashboard className="h-5 w-5" /> Admin
+                        </Link>
                         <Link href="/dashboard/miembros" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                           Miembros
                         </Link>
@@ -130,7 +133,7 @@ export function Header() {
                         <Link href="/dashboard/admin/predicaciones" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
                           Predicaciones
                         </Link>
-                      </>
+                      </div>
                     )}
                     <Button variant="outline" className="w-full justify-start px-2 py-3" onClick={signOut}>
                       <LogOut className="h-4 w-4 mr-2" /> Cerrar sesión
