@@ -74,48 +74,14 @@ export default function DashboardLayout({
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-500">{user.email}</span>
-              <nav className="flex space-x-4">
-                <Link
-                  href="/dashboard"
-                  className={`text-sm font-medium ${pathname === '/dashboard' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                  Inicio
-                </Link>
-                <Link
-                  href="/dashboard/miembros"
-                  className={`text-sm font-medium ${pathname.startsWith('/dashboard/miembros') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                  Miembros
-                </Link>
-                {isAdmin && (
-                  <>
-                    <Link
-                      href="/dashboard/admin"
-                      className={`text-sm font-medium ${pathname.startsWith('/dashboard/admin') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      Admin
-                    </Link>
-                    <Link
-                      href="/dashboard/admin/noticias"
-                      className={`text-sm font-medium ${pathname.startsWith('/dashboard/admin/noticias') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      Noticias
-                    </Link>
-                    <Link
-                      href="/dashboard/admin/predicaciones"
-                      className={`text-sm font-medium ${pathname.startsWith('/dashboard/admin/predicaciones') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      Predicaciones
-                    </Link>
-                  </>
-                )}
-                <button
-                  onClick={signOut}
-                  className="text-sm font-medium text-gray-500 hover:text-gray-700"
-                >
-                  Cerrar sesión
-                </button>
-              </nav>
+                <nav className="flex space-x-4">
+                  <Link
+                    href="/dashboard"
+                    className={`text-sm font-medium ${pathname === '/dashboard' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                  >
+                    Inicio
+                  </Link>
+                </nav>
             </div>
           </div>
         </div>
