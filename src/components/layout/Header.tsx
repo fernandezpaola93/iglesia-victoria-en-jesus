@@ -41,7 +41,7 @@ export function Header() {
   return (
     <header className={cn(
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-      scrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-primary-100' : 'bg-transparent'
+      scrolled ? 'bg-white/95 shadow-sm border-b border-primary-100' : 'bg-transparent'
     )}>
       <nav className="container-custom" aria-label="Navegación principal">
         <div className="flex h-16 items-center justify-between">
