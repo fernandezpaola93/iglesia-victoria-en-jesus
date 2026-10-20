@@ -105,9 +105,8 @@ export function Header() {
         {mobileMenuOpen && (
           <div
             id="mobile-menu"
-            className="absolute top-16 left-0 right-0 py-4 border-t border-primary-100 animate-slide-down bg-white max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-y-contain touch-pan-y z-50"
+            className="fixed top-16 inset-x-0 bottom-0 py-4 border-t border-primary-100 animate-slide-down bg-white overflow-y-auto overscroll-y-contain touch-pan-y z-50"
             style={{
-              maxHeight: 'calc(100dvh - 4rem)',
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
             }}
