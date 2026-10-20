@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { createPortal } from 'react-dom'
 import { Menu, X, Church, LogOut, User, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -41,7 +42,7 @@ export function Header() {
   return (
     <header className={cn(
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-      scrolled ? 'bg-white/95 shadow-sm border-b border-primary-100' : 'bg-transparent'
+      scrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-primary-100' : 'bg-transparent'
     )}>
       <nav className="container-custom" aria-label="Navegación principal">
         <div className="flex h-16 items-center justify-between">
@@ -102,10 +103,10 @@ export function Header() {
         </div>
 
         {/* Mobile Menu - ALWAYS AVAILABLE */}
-        {mobileMenuOpen && (
+        {mobileMenuOpen && createPortal(
           <div
             id="mobile-menu"
-            className="fixed top-16 inset-x-0 bottom-0 py-4 border-t border-primary-100 animate-slide-down bg-white overflow-y-auto overscroll-y-contain touch-pan-y z-50"
+            className="fixed top-16 inset-x-0 bottom-0 py-4 border-t border-primary-100 animate-slide-down bg-white overflow-y-scroll overscroll-y-contain touch-pan-y z-[60]"
             style={{
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
@@ -169,7 +170,8 @@ export function Header() {
                 )}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </nav>
     </header>
