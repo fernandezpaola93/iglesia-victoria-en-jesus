@@ -29,11 +29,9 @@ const contactInfo = [
     icon: Mail,
     title: 'Email',
     details: [
-      'General: info@victoriaenjesus.org',
-      'Oración: oracion@victoriaenjesus.org',
-      'Prensa: prensa@victoriaenjesus.org'
+      'victoriaenjesusvzla@gmail.com'
     ],
-    link: 'mailto:info@victoriaenjesus.org',
+    link: 'mailto:victoriaenjesusvzla@gmail.com',
   },
   {
     icon: Clock,

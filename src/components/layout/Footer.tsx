@@ -110,8 +110,8 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
                 <Mail className="h-5 w-5 text-accent-400 flex-shrink-0" aria-hidden="true" />
-                <a href="mailto:info@victoriaenjesus.org" className="hover:text-accent-400 transition-colors truncate block max-w-xs">
-                  info@victoriaenjesus.org
+                <a href="mailto:victoriaenjesusvzla@gmail.com" className="hover:text-accent-400 transition-colors truncate block max-w-xs">
+                  victoriaenjesusvzla@gmail.com
                 </a>
               </div>
             </address>
