@@ -277,6 +277,17 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               </a>
+              <a href="/dashboard/admin/visitas" className="p-4 border border-primary-200 rounded-xl hover:bg-primary-50 hover:border-primary-300 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-100 rounded-lg text-purple-600 group-hover:bg-purple-200 transition-colors">
+                    <Calendar className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-primary-900">Visitas Programadas</p>
+                    <p className="text-sm text-primary-500">Ver solicitudes de visita</p>
+                  </div>
+                </div>
+              </a>
             </CardBody>
           </Card>
         </div>
