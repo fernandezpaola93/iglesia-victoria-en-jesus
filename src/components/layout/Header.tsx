@@ -103,7 +103,15 @@ export function Header() {
 
         {/* Mobile Menu - ALWAYS AVAILABLE */}
         {mobileMenuOpen && (
-          <div id="mobile-menu" className="absolute top-16 left-0 right-0 py-4 border-t border-primary-100 animate-slide-down bg-white max-h-[calc(100vh-4rem)] overflow-y-auto z-50">
+          <div
+            id="mobile-menu"
+            className="absolute top-16 left-0 right-0 py-4 border-t border-primary-100 animate-slide-down bg-white max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-y-contain touch-pan-y z-50"
+            style={{
+              maxHeight: 'calc(100dvh - 4rem)',
+              WebkitOverflowScrolling: 'touch',
+              touchAction: 'pan-y',
+            }}
+          >
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link

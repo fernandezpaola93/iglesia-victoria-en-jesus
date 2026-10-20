@@ -72,22 +72,32 @@ export default function DashboardLayout({
             <div className="flex items-center">
               <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">{user.email}</span>
-                <nav className="flex space-x-4">
-                  <Link
-                    href="/dashboard"
-                    className={`text-sm font-medium ${pathname === '/dashboard' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                  >
-                    Inicio
-                  </Link>
-                  <Link
-                    href="/dashboard/admin/noticias"
-                    className={`text-sm font-medium ${pathname === '/dashboard/admin/noticias' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                  >
-                    Noticias
-                  </Link>
-                </nav>
+             <div className="flex items-center space-x-4">
+               <span className="text-sm text-gray-500">{user.email}</span>
+                 <nav className="flex space-x-4">
+                   <Link
+                     href="/dashboard"
+                     className={`text-sm font-medium ${pathname === '/dashboard' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                   >
+                     Inicio
+                   </Link>
+                   {isAdmin && (
+                     <>
+                       <Link
+                         href="/dashboard/admin/noticias"
+                         className={`text-sm font-medium ${pathname.startsWith('/dashboard/admin/noticias') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                       >
+                         Noticias
+                       </Link>
+                       <Link
+                         href="/dashboard/admin/eventos"
+                         className={`text-sm font-medium ${pathname.startsWith('/dashboard/admin/eventos') ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                       >
+                         Eventos
+                       </Link>
+                     </>
+                   )}
+                 </nav>
             </div>
           </div>
         </div>
