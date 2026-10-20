@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { Mail, Phone, MapPin, Clock, Send, Heart, UserPlus, Shield, Calendar, ChevronDown, ArrowRight } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock, Send, Heart, UserPlus, Shield, Calendar, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -286,18 +286,18 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Map Placeholder */}
+      {/* Map */}
       <section className="section bg-primary-50 container-custom">
         <div className="aspect-video rounded-2xl bg-primary-200 flex items-center justify-center overflow-hidden">
-          <div className="text-center p-8">
-            <MapPin className="h-16 w-16 text-primary-300 mx-auto mb-4" aria-hidden="true" />
-            <p className="text-primary-500 text-lg">Mapa interactivo</p>
-            <p className="text-primary-400 text-sm mt-2">Integración con Google Maps próximamente</p>
-            <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 font-medium">
-              Ver en Google Maps
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-          </div>
+          <iframe
+            src="https://maps.google.com/?q=Centro+Comercial+La+Casona+2+San+Antonio+de+los+Altos+Estado+Miranda+Venezuela&output=embed"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
 
