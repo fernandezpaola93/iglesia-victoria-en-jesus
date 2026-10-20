@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Church, Send, Heart, ShieldCheck, Mail, User, Clock } from 'lucide-react'
+import { Church, Send, Heart, Mail, User, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { createClient } from '@/lib/supabase/client'
 
 interface PrayerRequest {
   id: string
@@ -29,16 +30,25 @@ export default function OracionPage() {
     isPublic: false,
   })
 
+  const supabase = createClient()
+
   useEffect(() => {
     fetchPrayers()
   }, [])
 
   const fetchPrayers = async () => {
     try {
-      const res = await fetch('/api/oraciones/public')
-      if (!res.ok) throw new Error('Error al cargar peticiones')
-      const result = await res.json()
-      setPrayers(result.data || [])
+      const { data, error } = await supabase
+        .from('prayer_requests')
+        .select('id, name, request, created_at')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        throw error
+      }
+
+      setPrayers(data || [])
     } catch (error: any) {
       console.error(error)
     } finally {
