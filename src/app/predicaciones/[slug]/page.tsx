@@ -11,9 +11,19 @@ interface Sermon {
   speaker: string
   sermon_date: string
   thumbnail_url: string | null
+  video_url: string | null
   description: string | null
   duration_minutes: number | null
   content: string | null
+}
+
+function getYoutubeId(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (u.hostname.includes('youtube.com')) return u.searchParams.get('v')
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1)
+  } catch {}
+  return null
 }
 
 export default function PredicacionPage({ params }: { params: { slug: string } }) {
@@ -52,7 +62,12 @@ export default function PredicacionPage({ params }: { params: { slug: string } }
     <div className="container-custom py-16">
       <Card>
         <CardBody className="p-8">
-          {sermon.thumbnail_url && (
+          {sermon.video_url && (
+            <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 mb-6">
+              <VideoPlayer src={sermon.video_url} title={sermon.title} />
+            </div>
+          )}
+          {sermon.thumbnail_url && !sermon.video_url && (
             <img src={sermon.thumbnail_url} alt={sermon.title} className="w-full h-48 object-cover rounded-lg mb-6" />
           )}
           <h1 className="font-display text-3xl font-bold text-primary-900 mb-2">{sermon.title}</h1>
@@ -83,4 +98,20 @@ export default function PredicacionPage({ params }: { params: { slug: string } }
       </Card>
     </div>
   )
+}
+
+function VideoPlayer({ src, title }: { src: string; title: string }) {
+  const ytId = getYoutubeId(src)
+  if (ytId) {
+    return (
+      <iframe
+        src={`https://www.youtube.com/embed/${ytId}?rel=0`}
+        title={title}
+        className="w-full h-full"
+        allowFullScreen
+        loading="lazy"
+      />
+    )
+  }
+  return <video src={src} controls className="w-full h-full" preload="none" />
 }
