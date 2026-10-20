@@ -12,9 +12,8 @@ const contactInfo = [
     icon: MapPin,
     title: 'Dirección',
     details: [
-      'Av. Principal #123, Colonia Centro',
-      'Ciudad, Estado, C.P. 00000',
-      'México'
+      'Centro Comercial La Casona, Piso 1',
+      'Al lado del Puente, San Antonio de los Altos, Estado Miranda, Venezuela',
     ],
     link: null,
   },
