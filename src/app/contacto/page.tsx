@@ -21,11 +21,9 @@ const contactInfo = [
     icon: Phone,
     title: 'Teléfono',
     details: [
-      'Oficina: +52 55 1234 5678',
-      'WhatsApp: +52 55 8765 4321',
-      'Lun-Vie: 9:00 AM - 5:00 PM'
+      '+584226177853'
     ],
-    link: 'tel:+525512345678',
+    link: 'tel:+584226177853',
   },
   {
     icon: Mail,
