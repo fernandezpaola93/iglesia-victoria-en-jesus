@@ -1,0 +1,109 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { createBrowserClient } from '@supabase/ssr'
+import { Card, CardBody } from '@/components/ui/Card'
+
+interface Estudio {
+  id: string
+  title: string
+  slug: string
+  sermon_date: string
+  speaker: string
+  description: string | null
+  content: string | null
+  video_url: string | null
+  thumbnail_url: string | null
+}
+
+function getYoutubeId(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (u.hostname.includes('youtube.com')) return u.searchParams.get('v')
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1)
+  } catch {}
+  return null
+}
+
+export default function EstudioPage({ params }: { params: { slug: string } }) {
+  const [estudio, setEstudio] = useState<Estudio | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  useEffect(() => {
+    async function fetchEstudio() {
+      const { data, error } = await supabase
+        .from('sermons')
+        .select('*')
+        .eq('slug', params.slug)
+        .eq('is_published', true)
+        .eq('type', 'estudio')
+        .single()
+
+      if (error || !data) {
+        setNotFound(true)
+      } else {
+        setEstudio(data)
+      }
+      setLoading(false)
+    }
+    fetchEstudio()
+  }, [supabase, params.slug])
+
+  if (loading) return <div className="container-custom py-16 text-center">Cargando estudio...</div>
+  if (notFound || !estudio) return <div className="container-custom py-16 text-center">Estudio no encontrado.</div>
+
+  return (
+    <div className="container-custom py-16">
+      <Card>
+        <CardBody className="p-8">
+          {estudio.video_url && (
+            <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 mb-6">
+              <VideoPlayer src={estudio.video_url} title={estudio.title} />
+            </div>
+          )}
+          {estudio.thumbnail_url && !estudio.video_url && (
+            <img src={estudio.thumbnail_url} alt={estudio.title} className="w-full h-48 object-cover rounded-lg mb-6" />
+          )}
+          <h1 className="font-display text-3xl font-bold text-primary-900 mb-2">{estudio.title}</h1>
+          <p className="text-sm text-primary-600 mb-2">Maestro: {estudio.speaker}</p>
+          <div className="flex items-center gap-2 text-xs text-primary-500 mb-6">
+            <span className="flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {new Date(estudio.sermon_date).toLocaleDateString('es-ES')}
+            </span>
+          </div>
+          {estudio.description && (
+            <div className="prose prose-sm text-primary-700 max-w-none mb-6">{estudio.description}</div>
+          )}
+          {estudio.content && (
+            <div className="prose prose-sm text-primary-700 max-w-none">{estudio.content}</div>
+          )}
+        </CardBody>
+      </Card>
+    </div>
+  )
+}
+
+function VideoPlayer({ src, title }: { src: string; title: string }) {
+  const ytId = getYoutubeId(src)
+  if (ytId) {
+    return (
+      <iframe
+        src={`https://www.youtube.com/embed/${ytId}?rel=0`}
+        title={title}
+        className="w-full h-full"
+        allowFullScreen
+        loading="lazy"
+      />
+    )
+  }
+  return <video src={src} controls className="w-full h-full" preload="none" />
+}
