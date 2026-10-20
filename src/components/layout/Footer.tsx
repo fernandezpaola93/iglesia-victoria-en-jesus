@@ -100,7 +100,7 @@ export function Footer() {
             <address className="not-italic space-y-2 sm:space-y-3 text-primary-300 text-sm sm:text-base">
               <div className="flex items-start gap-2 sm:gap-3">
                 <MapPin className="h-5 w-5 text-accent-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <p className="leading-relaxed">Av. Principal #123, Centro<br />Ciudad, Estado, C.P. 00000</p>
+                <p className="leading-relaxed">Centro Comercial La Casona, 2do Piso, Local 1<br />Al lado del Puente, San Antonio de los Altos, Estado Miranda, Venezuela</p>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
                 <Phone className="h-5 w-5 text-accent-400 flex-shrink-0" aria-hidden="true" />
