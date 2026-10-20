@@ -210,7 +210,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <p className="font-medium text-primary-900">Dirección</p>
-                    <p className="text-primary-600 text-sm">Av. Principal #123, Centro, Ciudad</p>
+                    <p className="text-primary-600 text-sm">Centro Comercial La Casona, Piso 1</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -225,11 +225,15 @@ export default function HomePage() {
               </div>
             </div>
             <div className="aspect-video rounded-2xl bg-primary-200 flex items-center justify-center overflow-hidden">
-              <div className="text-center p-6 sm:p-8">
-                <MapPin className="h-12 w-12 sm:h-16 sm:w-16 text-primary-300 mx-auto mb-3" aria-hidden="true" />
-                <p className="text-primary-500 text-sm sm:text-base">Mapa interactivo próximamente</p>
-                <p className="text-primary-400 text-xs sm:text-sm mt-1">Integración con Google Maps</p>
-              </div>
+              <iframe
+                src="https://maps.google.com/?q=Centro+Comercial+La+Casona+Piso+1+Al+lado+del+Puente+San+Antonio+de+los+Altos+Estado+Miranda+Venezuela&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
           </div>
         </div>
