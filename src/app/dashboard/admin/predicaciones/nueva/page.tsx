@@ -6,6 +6,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 import { Card, CardBody, CardHeader, CardTitle, Button, Input, Textarea, Checkbox, VideoUpload } from '@/components/ui'
+import { resolveAuthorMemberId } from '@/lib/supabase/author'
 
 interface FormData {
   title: string
@@ -99,15 +100,23 @@ export default function NewSermonPage() {
           throw new Error('El usuario no tiene un perfil en la tabla profiles. Asegúrate de que el trigger de creación de perfil funcione.');
         }
 
+        const authorId = await resolveAuthorMemberId(supabase, user)
+
         const { error } = await supabase.from('sermons').insert({
           ...formData,
           duration_minutes: formData.duration_minutes ? parseInt(formData.duration_minutes) : null,
           tags: tagsArray,
-          author_id: user.id,
+          author_id: authorId,
         })
 
         if (error) {
           console.error("DEBUG: Error al insertar sermón:", error);
+          if (error.code === '42501') {
+            throw new Error('No tienes permisos para crear predicaciones (RLS). Ejecuta fix-news-rls.sql en el SQL Editor de Supabase.')
+          }
+          if (error.code === '23503') {
+            throw new Error('No se pudo asociar el autor a la predicación (FK author_id). Revisa el registro de miembro del usuario.')
+          }
           throw error;
         }
 

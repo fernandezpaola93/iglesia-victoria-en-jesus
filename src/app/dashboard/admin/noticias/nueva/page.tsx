@@ -7,6 +7,7 @@ import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 import { Card, CardBody, CardHeader, CardTitle, Button, Input, Textarea, Select, Checkbox } from '@/components/ui'
 import { NewsCategory } from '@/lib/types'
+import { resolveAuthorMemberId } from '@/lib/supabase/author'
 
 interface FormData {
   title: string
@@ -70,13 +71,23 @@ export default function NewNewsPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Usuario no autenticado')
 
+      const authorId = await resolveAuthorMemberId(supabase, user)
+
       const { error } = await supabase.from('news').insert({
         ...formData,
-        author_id: user.id,
+        author_id: authorId,
         published_at: formData.is_published ? new Date().toISOString() : null,
       })
 
-      if (error) throw error
+      if (error) {
+        if (error.code === '42501') {
+          throw new Error('No tienes permisos para crear noticias (RLS). Ejecuta fix-news-rls.sql en el SQL Editor de Supabase.')
+        }
+        if (error.code === '23503') {
+          throw new Error('No se pudo asociar el autor a la noticia (FK author_id). Revisa el registro de miembro del usuario.')
+        }
+        throw error
+      }
 
       router.push('/dashboard/admin/noticias')
       router.refresh()
