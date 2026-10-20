@@ -37,6 +37,7 @@ export default function AdminNewsPage() {
   const [news, setNews] = useState<NewsRow[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [eventNewsIds, setEventNewsIds] = useState<string[]>([])
   const { isAdmin } = useAuth()
 
   const supabase = createBrowserClient(
@@ -60,6 +61,14 @@ export default function AdminNewsPage() {
 
       if (error) throw error
       setNews(data || [])
+
+      // Que noticias son tambien eventos (para mostrar la insignia)
+      const { data: events } = await supabase
+        .from('events')
+        .select('news_id')
+        .not('news_id', 'is', null)
+
+      setEventNewsIds((events || []).map((e) => e.news_id).filter(Boolean))
     } catch (error) {
       console.error('Error fetching news:', error)
     } finally {
@@ -72,6 +81,9 @@ export default function AdminNewsPage() {
     if (!confirm('¿Estás seguro de que quieres eliminar esta noticia?')) return
     setDeletingId(id)
     try {
+      // Si la noticia era un evento, tambien se elimina
+      await supabase.from('events').delete().eq('news_id', id)
+
       const { error } = await supabase.from('news').delete().eq('id', id)
       if (error) throw error
       setNews(news.filter(n => n.id !== id))
@@ -202,6 +214,9 @@ export default function AdminNewsPage() {
                             <Badge variant="warning" value="featured" className="ml-1">
                               Destacada
                             </Badge>
+                          )}
+                          {eventNewsIds.includes(item.id) && (
+                            <Badge className="ml-1 bg-blue-100 text-blue-800">Evento</Badge>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-primary-500">

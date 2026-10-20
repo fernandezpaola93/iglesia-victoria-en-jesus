@@ -8,6 +8,8 @@ import Link from 'next/link'
 import { Card, CardBody, CardHeader, CardTitle, Button, Input, Textarea, Select, Checkbox } from '@/components/ui'
 import { NewsCategory } from '@/lib/types'
 import { resolveAuthorMemberId } from '@/lib/supabase/author'
+import { EventFields } from '@/components/news/EventFields'
+import { EMPTY_NEWS_EVENT_FORM, syncEventForNews, type NewsEventForm } from '@/lib/events'
 
 interface FormData {
   title: string
@@ -36,6 +38,7 @@ export default function NewNewsPage() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [eventData, setEventData] = useState<NewsEventForm>(EMPTY_NEWS_EVENT_FORM)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -73,11 +76,15 @@ export default function NewNewsPage() {
 
       const authorId = await resolveAuthorMemberId(supabase, user)
 
-      const { error } = await supabase.from('news').insert({
-        ...formData,
-        author_id: authorId,
-        published_at: formData.is_published ? new Date().toISOString() : null,
-      })
+      const { data: created, error } = await supabase
+        .from('news')
+        .insert({
+          ...formData,
+          author_id: authorId,
+          published_at: formData.is_published ? new Date().toISOString() : null,
+        })
+        .select('id')
+        .single()
 
       if (error) {
         if (error.code === '42501') {
@@ -87,6 +94,10 @@ export default function NewNewsPage() {
           throw new Error('No se pudo asociar el autor a la noticia (FK author_id). Revisa el registro de miembro del usuario.')
         }
         throw error
+      }
+
+      if (eventData.is_event) {
+        await syncEventForNews(supabase, created.id, formData, eventData)
       }
 
       router.push('/dashboard/admin/noticias')
@@ -229,6 +240,8 @@ export default function NewNewsPage() {
                   <span className="text-sm text-primary-700">Destacada en portada</span>
                 </label>
               </div>
+
+              <EventFields value={eventData} onChange={setEventData} />
 
               <div className="flex gap-4 pt-4 border-t">
                 <Button type="submit" disabled={loading}>

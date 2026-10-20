@@ -7,6 +7,13 @@ import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 import { Card, CardBody, CardHeader, CardTitle, Button, Input, Textarea, Select, Checkbox, Badge } from '@/components/ui'
 import { News, NewsCategory } from '@/lib/types'
+import { EventFields } from '@/components/news/EventFields'
+import {
+  EMPTY_NEWS_EVENT_FORM,
+  syncEventForNews,
+  toLocalDateTimeInput,
+  type NewsEventForm,
+} from '@/lib/events'
 
 interface FormData {
   title: string
@@ -39,6 +46,7 @@ export default function EditNewsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [eventData, setEventData] = useState<NewsEventForm>(EMPTY_NEWS_EVENT_FORM)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -68,6 +76,24 @@ export default function EditNewsPage() {
           category: data.category,
           is_published: data.is_published,
           is_featured: data.is_featured,
+        })
+      }
+
+      // Cargar el evento asociado, si la noticia ya es un evento
+      const { data: event } = await supabase
+        .from('events')
+        .select('*')
+        .eq('news_id', id)
+        .maybeSingle()
+
+      if (event) {
+        setEventData({
+          is_event: true,
+          event_type: event.event_type,
+          start_datetime: toLocalDateTimeInput(event.start_datetime),
+          end_datetime: toLocalDateTimeInput(event.end_datetime),
+          location: event.location || '',
+          requires_registration: event.requires_registration,
         })
       }
     } catch (err: any) {
@@ -102,6 +128,8 @@ export default function EditNewsPage() {
         .eq('id', id)
 
       if (error) throw error
+
+      await syncEventForNews(supabase, id, formData, eventData)
 
       router.push('/dashboard/admin/noticias')
       router.refresh()
@@ -281,6 +309,8 @@ export default function EditNewsPage() {
                   <span className="text-sm text-primary-700">Destacada en portada</span>
                 </label>
               </div>
+
+              <EventFields value={eventData} onChange={setEventData} />
 
               <div className="flex gap-4 pt-4 border-t">
                 <Button type="submit" disabled={saving}>
