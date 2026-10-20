@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       name: body.name || null,
       email: body.email || null,
       request: body.request,
-      is_public: body.is_public === true,
+      is_public: body.is_public === true || body.isPublic === true,
       status: 'pendiente',
     }
 
