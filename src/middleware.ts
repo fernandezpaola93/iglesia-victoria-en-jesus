@@ -1,6 +1,11 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Secciones del panel que puede ver cualquier usuario autenticado,
+// aunque no sea administrador (solo lectura: el RLS de la tabla limita
+// lo que puede ver a las noticias publicadas).
+const READ_ONLY_ADMIN_PATHS = ['/dashboard/admin/noticias']
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -40,10 +45,16 @@ export async function middleware(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
+    const pathname = request.nextUrl.pathname.replace(/\/+$/, '') || '/'
+
     if (profile?.role !== 'admin') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard'
-      return NextResponse.redirect(url)
+      const isReadOnlySection = READ_ONLY_ADMIN_PATHS.includes(pathname)
+
+      if (!isReadOnlySection) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/dashboard'
+        return NextResponse.redirect(url)
+      }
     }
   }
 

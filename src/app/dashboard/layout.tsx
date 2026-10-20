@@ -81,6 +81,12 @@ export default function DashboardLayout({
                   >
                     Inicio
                   </Link>
+                  <Link
+                    href="/dashboard/admin/noticias"
+                    className={`text-sm font-medium ${pathname === '/dashboard/admin/noticias' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                  >
+                    Noticias
+                  </Link>
                 </nav>
             </div>
           </div>

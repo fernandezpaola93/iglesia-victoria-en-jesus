@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { formatShortDate } from '@/lib/utils'
 import { News, NewsCategory } from '@/lib/types'
+import { useAuth } from '@/components/auth/AuthProvider'
 
 interface NewsAuthor {
   first_name: string
@@ -36,6 +37,7 @@ export default function AdminNewsPage() {
   const [news, setNews] = useState<NewsRow[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const { isAdmin } = useAuth()
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -66,6 +68,7 @@ export default function AdminNewsPage() {
   }
 
   const handleDelete = async (id: string) => {
+    if (!isAdmin) return
     if (!confirm('¿Estás seguro de que quieres eliminar esta noticia?')) return
     setDeletingId(id)
     try {
@@ -116,28 +119,49 @@ export default function AdminNewsPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-primary-900">Noticias</h1>
-            <p className="text-primary-600 mt-1">Gestionar noticias y anuncios de la iglesia</p>
+            <p className="text-primary-600 mt-1">
+              {isAdmin
+                ? 'Gestionar noticias y anuncios de la iglesia'
+                : 'Noticias y anuncios publicados de la iglesia'}
+            </p>
           </div>
-          <Link href="/dashboard/admin/noticias/nueva">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Nueva Noticia
-            </Button>
-          </Link>
+          {isAdmin && (
+            <Link href="/dashboard/admin/noticias/nueva">
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Nueva Noticia
+              </Button>
+            </Link>
+          )}
         </div>
+
+        {!isAdmin && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-sm">
+            Tienes acceso de solo lectura: aquí se muestran únicamente las noticias
+            publicadas. Para crear o editar noticias contacta a un administrador.
+          </div>
+        )}
 
         {news.length === 0 ? (
           <Card>
             <CardBody className="py-12 text-center">
               <FileText className="h-12 w-12 mx-auto text-primary-300 mb-4" />
-              <h3 className="text-lg font-medium text-primary-900 mb-2">No hay noticias</h3>
-              <p className="text-primary-500 mb-6">Comienza creando tu primera noticia</p>
-              <Link href="/dashboard/admin/noticias/nueva">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Crear Noticia
-                </Button>
-              </Link>
+              <h3 className="text-lg font-medium text-primary-900 mb-2">
+                {isAdmin ? 'No hay noticias' : 'No hay noticias publicadas'}
+              </h3>
+              <p className="text-primary-500 mb-6">
+                {isAdmin
+                  ? 'Comienza creando tu primera noticia'
+                  : 'Todavía no hay noticias publicadas en el sitio.'}
+              </p>
+              {isAdmin && (
+                <Link href="/dashboard/admin/noticias/nueva">
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Crear Noticia
+                  </Button>
+                </Link>
+              )}
             </CardBody>
           </Card>
         ) : (
@@ -152,9 +176,9 @@ export default function AdminNewsPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">Autor</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">Estado</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">Fecha</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-primary-500 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-primary-500 uppercase tracking-wider">Acciones</th>
+                      </tr>
+                    </thead>
                   <tbody className="divide-y divide-gray-200">
                     {news.map((item) => (
                       <tr key={item.id} className="hover:bg-gray-50">
@@ -193,13 +217,15 @@ export default function AdminNewsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end gap-2">
-                            <Link
-                              href={`/dashboard/admin/noticias/${item.id}/editar`}
-                              className="text-primary-600 hover:text-primary-900 p-1.5 rounded transition-colors"
-                              title="Editar"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Link>
+                            {isAdmin && (
+                              <Link
+                                href={`/dashboard/admin/noticias/${item.id}/editar`}
+                                className="text-primary-600 hover:text-primary-900 p-1.5 rounded transition-colors"
+                                title="Editar"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Link>
+                            )}
                             <Link
                               href={`/noticias/${item.slug}`}
                               target="_blank"
@@ -208,18 +234,20 @@ export default function AdminNewsPage() {
                             >
                               <Eye className="h-4 w-4" />
                             </Link>
-                            <button
-                              onClick={() => handleDelete(item.id)}
-                              disabled={deletingId === item.id}
-                              className="text-red-600 hover:text-red-900 p-1.5 rounded transition-colors"
-                              title="Eliminar"
-                            >
-                              {deletingId === item.id ? (
-                                <div className="h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                              ) : (
-                                <Trash2 className="h-4 w-4" />
-                              )}
-                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleDelete(item.id)}
+                                disabled={deletingId === item.id}
+                                className="text-red-600 hover:text-red-900 p-1.5 rounded transition-colors"
+                                title="Eliminar"
+                              >
+                                {deletingId === item.id ? (
+                                  <div className="h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-4 w-4" />
+                                )}
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
