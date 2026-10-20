@@ -114,6 +114,12 @@ export function Footer() {
                   victoriaenjesusvzla@gmail.com
                 </a>
               </div>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Church className="h-5 w-5 text-accent-400 flex-shrink-0" aria-hidden="true" />
+                <Link href="/oracion" className="hover:text-accent-400 transition-colors truncate block max-w-xs">
+                  Peticiones de Oración
+                </Link>
+              </div>
             </address>
           </div>
         </div>
