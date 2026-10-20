@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Users, Heart, Calendar, Target, TrendingUp, DollarSign, Clock, AlertCircle, Download } from 'lucide-react'
+import { Users, Heart, Calendar, Target, TrendingUp, DollarSign, Clock, AlertCircle, Download, Church } from 'lucide-react'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { formatShortDate } from '@/lib/utils'
@@ -285,6 +285,17 @@ export default function AdminDashboardPage() {
                   <div>
                     <p className="font-medium text-primary-900">Visitas Programadas</p>
                     <p className="text-sm text-primary-500">Ver solicitudes de visita</p>
+                  </div>
+                </div>
+              </a>
+              <a href="/dashboard/admin/oraciones" className="p-4 border border-primary-200 rounded-xl hover:bg-primary-50 hover:border-primary-300 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600 group-hover:bg-indigo-200 transition-colors">
+                    <Church className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-primary-900">Peticiones de Oración</p>
+                    <p className="text-sm text-primary-500">Ver peticiones de la congregación</p>
                   </div>
                 </div>
               </a>
