@@ -25,6 +25,7 @@ export function Header() {
   const { user, signOut, loading, isAdmin } = useAuth()
   const pathname = usePathname()
   const isAdminDashboardPage = isAdmin && pathname === '/dashboard/admin'
+  const isSplitMenuPage = isAdminDashboardPage || pathname === '/'
 
   // Handle scroll effect
   useEffect(() => {
@@ -109,14 +110,14 @@ export function Header() {
             id="mobile-menu"
             className={cn(
               'fixed top-16 inset-x-0 bottom-0 py-4 border-t border-primary-100 animate-slide-down bg-white overscroll-y-contain touch-pan-y z-[60]',
-              isAdminDashboardPage ? 'overflow-hidden' : 'overflow-y-scroll'
+              isSplitMenuPage ? 'overflow-hidden' : 'overflow-y-scroll'
             )}
             style={{
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
             }}
           >
-            {isAdminDashboardPage ? (
+            {isSplitMenuPage ? (
               <div className="mx-auto grid h-full max-w-6xl grid-rows-2 gap-3 px-4 md:grid-cols-2 md:grid-rows-1">
                 <section className="min-h-0 overflow-y-auto overscroll-y-contain rounded-lg border border-primary-100 p-3">
                   <h2 className="mb-2 px-2 font-semibold text-primary-900">Navegación</h2>
@@ -139,48 +140,70 @@ export function Header() {
                   </nav>
                 </section>
                 <section className="min-h-0 overflow-y-auto overscroll-y-contain rounded-lg border border-primary-100 p-3">
-                  <h2 className="mb-2 px-2 font-semibold text-primary-900">Administración</h2>
+                  <h2 className="mb-2 px-2 font-semibold text-primary-900">
+                    {isAdmin ? 'Administración' : user ? 'Mi cuenta' : 'Acceso'}
+                  </h2>
                   <nav className="flex flex-col gap-1" aria-label="Opciones de administración">
-                    <Link href="/dashboard/admin" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Resumen
-                    </Link>
-                    <Link href="/dashboard/miembros" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Miembros
-                    </Link>
-                    <Link href="/dashboard/admin/noticias" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Noticias
-                    </Link>
-                    <Link href="/dashboard/admin/eventos" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Eventos
-                    </Link>
-                    <Link href="/dashboard/admin/predicaciones" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Predicaciones
-                    </Link>
-                    <Link href="/dashboard/admin/estudios" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Estudios bíblicos
-                    </Link>
-                    <Link href="/dashboard/admin/devocionales" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Devocionales
-                    </Link>
-                    <Link href="/dashboard/admin/creencias" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Creencias
-                    </Link>
-                    <Link href="/dashboard/admin/oraciones" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Oraciones
-                    </Link>
-                    <Link href="/dashboard/admin/servir" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Servir
-                    </Link>
-                    <Link href="/dashboard/admin/visitas" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Visitas
-                    </Link>
-                    <Link href="/dashboard/admin/lideres" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
-                      Líderes
-                    </Link>
-                    {user && (
-                      <Button variant="outline" className="mt-2 w-full justify-start px-3 py-3 md:hidden" onClick={signOut}>
-                        <LogOut className="mr-2 h-4 w-4" /> Cerrar sesión
-                      </Button>
+                    {isAdmin ? (
+                      <>
+                        <Link href="/dashboard/admin" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Resumen
+                        </Link>
+                        <Link href="/dashboard/miembros" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Miembros
+                        </Link>
+                        <Link href="/dashboard/admin/noticias" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Noticias
+                        </Link>
+                        <Link href="/dashboard/admin/eventos" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Eventos
+                        </Link>
+                        <Link href="/dashboard/admin/predicaciones" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Predicaciones
+                        </Link>
+                        <Link href="/dashboard/admin/estudios" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Estudios bíblicos
+                        </Link>
+                        <Link href="/dashboard/admin/devocionales" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Devocionales
+                        </Link>
+                        <Link href="/dashboard/admin/creencias" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Creencias
+                        </Link>
+                        <Link href="/dashboard/admin/oraciones" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Oraciones
+                        </Link>
+                        <Link href="/dashboard/admin/servir" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Servir
+                        </Link>
+                        <Link href="/dashboard/admin/visitas" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Visitas
+                        </Link>
+                        <Link href="/dashboard/admin/lideres" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Líderes
+                        </Link>
+                        <Button variant="outline" className="mt-2 w-full justify-start px-3 py-3 md:hidden" onClick={signOut}>
+                          <LogOut className="mr-2 h-4 w-4" /> Cerrar sesión
+                        </Button>
+                      </>
+                    ) : user ? (
+                      <>
+                        <Link href="/dashboard" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                          Panel de control
+                        </Link>
+                        <Button variant="outline" className="mt-2 w-full justify-start px-3 py-3 md:hidden" onClick={signOut}>
+                          <LogOut className="mr-2 h-4 w-4" /> Cerrar sesión
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                          <Button variant="outline" className="w-full justify-start px-3 py-3">Iniciar sesión</Button>
+                        </Link>
+                        <Link href="/registro" onClick={() => setMobileMenuOpen(false)}>
+                          <Button variant="primary" className="w-full justify-start px-3 py-3">Registrarse</Button>
+                        </Link>
+                      </>
                     )}
                   </nav>
                 </section>
