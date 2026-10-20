@@ -12,6 +12,7 @@ const navItems = [
   { href: '/', label: 'Inicio' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/ministerios', label: 'Ministerios' },
+  { href: '/noticias', label: 'Noticias' },
   { href: '/eventos', label: 'Eventos' },
   { href: '/oracion', label: 'Oración' },
   { href: '/contacto', label: 'Contacto' },

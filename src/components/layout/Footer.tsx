@@ -12,6 +12,7 @@ const footerLinks = {
     { href: '/predicas', label: 'Predicas' },
     { href: '/estudios', label: 'Estudios Bíblicos' },
     { href: '/devocionales', label: 'Devocionales' },
+    { href: '/noticias', label: 'Noticias' },
     { href: '/eventos', label: 'Próximos Eventos' },
   ],
   contacto: [
