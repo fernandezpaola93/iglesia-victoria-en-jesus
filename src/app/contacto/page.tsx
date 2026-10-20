@@ -51,7 +51,7 @@ export default function ContactPage() {
     name: '',
     email: '',
     phone: '',
-    areas: [] as string[],
+    area: '',
     experience: '',
     availability: '',
   })
@@ -67,7 +67,10 @@ export default function ContactPage() {
       const res = await fetch('/api/servir', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(serveFormData),
+        body: JSON.stringify({
+          ...serveFormData,
+          areas: serveFormData.area ? [serveFormData.area] : [],
+        }),
       })
 
       if (res.ok) {
@@ -76,7 +79,7 @@ export default function ContactPage() {
           name: '',
           email: '',
           phone: '',
-          areas: [],
+          area: '',
           experience: '',
           availability: '',
         })
@@ -258,16 +261,15 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="serve-areas">Áreas de interés *</Label>
+                    <Label htmlFor="serve-area">Área de interés *</Label>
                     <select
-                      id="serve-areas"
-                      multiple
+                      id="serve-area"
                       required
-                      value={serveFormData.areas}
-                      onChange={(e) => setServeFormData({ ...serveFormData, areas: Array.from(e.target.selectedOptions, o => o.value) })}
-                      className="input min-h-[100px]"
-                      size={5}
+                      value={serveFormData.area}
+                      onChange={(e) => setServeFormData({ ...serveFormData, area: e.target.value })}
+                      className="input"
                     >
+                      <option value="">Selecciona un área</option>
                       <option value="worship">Alabanza y Adoración</option>
                       <option value="teaching">Enseñanza / Escuela Dominical</option>
                       <option value="children">Ministerio de Niños</option>
@@ -282,7 +284,6 @@ export default function ContactPage() {
                       <option value="maintenance">Mantenimiento / Limpieza</option>
                       <option value="other">Otro</option>
                     </select>
-                    <p className="text-xs text-primary-500 mt-1">Mantén Ctrl/Cmd para seleccionar múltiples</p>
                   </div>
                   <div>
                     <Label htmlFor="serve-experience">Experiencia / Habilidades</Label>
