@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { Calendar, MapPin, Clock, Users, Heart, CheckCircle, Mail, Phone, Send, ArrowRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Label, Select } from '@/components/ui/Input'
@@ -37,6 +38,62 @@ const faqs = [
 ]
 
 export default function VisitPage() {
+  const [submitting, setSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [formData, setFormData] = useState<{
+    name: string
+    email: string
+    phone: string
+    preferredDate: string
+    preferredService: string
+    guests: string
+    kidsAges: string
+    notes: string
+  }>({
+    name: '',
+    email: '',
+    phone: '',
+    preferredDate: '',
+    preferredService: '',
+    guests: '1',
+    kidsAges: '',
+    notes: '',
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setSubmitStatus('idle')
+
+    try {
+      const res = await fetch('/api/visitas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        setSubmitStatus('success')
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          preferredDate: '',
+          preferredService: '',
+          guests: '1',
+          kidsAges: '',
+          notes: '',
+        })
+      } else {
+        setSubmitStatus('error')
+      }
+    } catch {
+      setSubmitStatus('error')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <div className="space-y-16">
       {/* Hero */}
@@ -190,30 +247,62 @@ export default function VisitPage() {
 
           <Card className="bg-primary-950 border-primary-800">
             <CardBody className="p-8">
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <Label htmlFor="visit-name" className="text-primary-300">Nombre completo *</Label>
-                    <Input id="visit-name" required className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20" />
+                    <Input
+                      id="visit-name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20"
+                    />
                   </div>
                   <div>
                     <Label htmlFor="visit-email" className="text-primary-300">Email *</Label>
-                    <Input id="visit-email" type="email" required className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20" />
+                    <Input
+                      id="visit-email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20"
+                    />
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <Label htmlFor="visit-phone" className="text-primary-300">Teléfono *</Label>
-                    <Input id="visit-phone" type="tel" required className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20" />
+                    <Input
+                      id="visit-phone"
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20"
+                    />
                   </div>
                   <div>
                     <Label htmlFor="visit-date" className="text-primary-300">Fecha preferida *</Label>
-                    <Input id="visit-date" type="date" required className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20" />
+                    <Input
+                      id="visit-date"
+                      type="date"
+                      required
+                      value={formData.preferredDate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, preferredDate: e.target.value }))}
+                      className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20"
+                    />
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="visit-service" className="text-primary-300">Culto preferido</Label>
-                  <Select id="visit-service" className="bg-primary-900 border-primary-700 text-white focus:border-accent-500 focus:ring-accent-500/20">
+                  <Select
+                    id="visit-service"
+                    value={formData.preferredService}
+                    onChange={(e) => setFormData(prev => ({ ...prev, preferredService: e.target.value }))}
+                    className="bg-primary-900 border-primary-700 text-white focus:border-accent-500 focus:ring-accent-500/20"
+                  >
                     <option value="">Cualquiera</option>
                     <option value="9am">9:00 AM - Tradicional</option>
                     <option value="11am">11:00 AM - Contemporáneo</option>
@@ -221,7 +310,13 @@ export default function VisitPage() {
                 </div>
                 <div>
                   <Label htmlFor="visit-guests" className="text-primary-300">¿Cuántas personas vienen? *</Label>
-                  <Select id="visit-guests" required className="bg-primary-900 border-primary-700 text-white focus:border-accent-500 focus:ring-accent-500/20">
+                  <Select
+                    id="visit-guests"
+                    required
+                    value={formData.guests}
+                    onChange={(e) => setFormData(prev => ({ ...prev, guests: e.target.value }))}
+                    className="bg-primary-900 border-primary-700 text-white focus:border-accent-500 focus:ring-accent-500/20"
+                  >
                     <option value="1">Solo yo</option>
                     <option value="2">2 personas</option>
                     <option value="3">3 personas</option>
@@ -232,19 +327,55 @@ export default function VisitPage() {
                 </div>
                 <div>
                   <Label htmlFor="visit-kids" className="text-primary-300">Edades de los niños (si aplica)</Label>
-                  <Input id="visit-kids" placeholder="Ej: 3 años, 7 años, 14 años" className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20" />
+                  <Input
+                    id="visit-kids"
+                    value={formData.kidsAges}
+                    onChange={(e) => setFormData(prev => ({ ...prev, kidsAges: e.target.value }))}
+                    placeholder="Ej: 3 años, 7 años, 14 años"
+                    className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="visit-notes" className="text-primary-300">¿Algo que debamos saber? (alergias, movilidad, preguntas, etc.)</Label>
-                  <Textarea id="visit-notes" rows={3} className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20" />
+                  <Textarea
+                    id="visit-notes"
+                    value={formData.notes}
+                    onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                    rows={3}
+                    className="bg-primary-900 border-primary-700 text-white placeholder-primary-500 focus:border-accent-500 focus:ring-accent-500/20"
+                  />
                 </div>
-                <Button type="submit" variant="accent" size="lg" className="w-full">
-                  <Send className="h-4 w-4 mr-2" aria-hidden="true" />
-                  Confirmar mi visita
+                <Button type="submit" variant="accent" size="lg" className="w-full" disabled={submitting}>
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Enviando...
+                    </span>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4 mr-2" aria-hidden="true" />
+                      Confirmar mi visita
+                    </>
+                  )}
                 </Button>
-                <p className="text-center text-primary-500 text-sm">
-                  Te contactaremos por WhatsApp o email dentro de 24 horas para confirmar.
-                </p>
+                {submitStatus === 'success' && (
+                  <p className="text-center text-green-400 text-sm font-medium">
+                    ¡Visita registrada! Te contactaremos por WhatsApp o email dentro de 24 horas para confirmar.
+                  </p>
+                )}
+                {submitStatus === 'error' && (
+                  <p className="text-center text-red-400 text-sm font-medium">
+                    Ocurrió un error al enviar. Inténtalo nuevamente o contáctanos directamente.
+                  </p>
+                )}
+                {submitStatus === 'idle' && !submitting && (
+                  <p className="text-center text-primary-500 text-sm">
+                    Te contactaremos por WhatsApp o email dentro de 24 horas para confirmar.
+                  </p>
+                )}
               </form>
             </CardBody>
           </Card>
