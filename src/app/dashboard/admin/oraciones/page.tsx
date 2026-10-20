@@ -54,21 +54,37 @@ export default function OracionesAdminPage() {
   const fetchPrayers = async () => {
     setLoading(true)
     try {
-      const params = new URLSearchParams()
-      if (search) params.set('search', search)
-      if (statusFilter && statusFilter !== 'Todos') params.set('status', statusFilter)
-      if (publicFilter && publicFilter !== 'Todos') params.set('is_public', publicFilter === 'Públicas' ? 'true' : 'false')
-      params.set('page', page.toString())
-      params.set('pageSize', pageSize.toString())
+      let query = supabase
+        .from('prayer_requests')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range((page - 1) * pageSize, page * pageSize - 1)
 
-      const response = await fetch(`/api/oraciones?${params.toString()}`)
-      if (!response.ok) throw new Error('Error al cargar peticiones')
+      if (search) {
+        query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,request.ilike.%${search}%`)
+      }
 
-      const result = await response.json()
-      setPrayers(result.data || [])
-      setTotalCount(result.count || 0)
+      if (statusFilter && statusFilter !== 'Todos') {
+        query = query.eq('status', statusFilter)
+      }
+
+      if (publicFilter === 'Públicas') {
+        query = query.eq('is_public', true)
+      } else if (publicFilter === 'Privadas') {
+        query = query.eq('is_public', false)
+      }
+
+      const { data, error, count } = await query
+
+      if (error) {
+        throw error
+      }
+
+      setPrayers(data || [])
+      setTotalCount(count || 0)
     } catch (error: any) {
       console.error(error)
+      alert('Error al cargar peticiones: ' + (error.message || 'Desconocido'))
     } finally {
       setLoading(false)
     }
@@ -77,12 +93,15 @@ export default function OracionesAdminPage() {
   const updatePrayer = async (id: string, updates: { status?: string; is_public?: boolean }) => {
     setSaving(prev => ({ ...prev, [id]: true }))
     try {
-      const response = await fetch(`/api/oraciones/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
-      })
-      if (!response.ok) throw new Error('Error al actualizar')
+      const { error } = await supabase
+        .from('prayer_requests')
+        .update(updates)
+        .eq('id', id)
+
+      if (error) {
+        throw error
+      }
+
       await fetchPrayers()
     } catch (error: any) {
       alert(error.message || 'Error al actualizar')
@@ -240,11 +259,11 @@ export default function OracionesAdminPage() {
                               className="h-8 w-8 p-0"
                               aria-label={prayer.is_public ? 'Ocultar de público' : 'Mostrar en público'}
                             >
-                            {prayer.is_public ? (
-                              <Church className="h-4 w-4 text-primary-500" aria-hidden="true" />
-                            ) : (
-                              <User className="h-4 w-4 text-gray-400" aria-hidden="true" />
-                            )}
+                              {prayer.is_public ? (
+                                <Church className="h-4 w-4 text-primary-500" aria-hidden="true" />
+                              ) : (
+                                <User className="h-4 w-4 text-gray-400" aria-hidden="true" />
+                              )}
                             </Button>
                           </div>
                         </td>
