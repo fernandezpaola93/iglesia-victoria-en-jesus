@@ -226,7 +226,7 @@ export default function HomePage() {
             </div>
             <div className="aspect-video rounded-2xl bg-primary-200 flex items-center justify-center overflow-hidden">
               <iframe
-                src="https://maps.google.com/?q=Centro+Comercial+La+Casona+Piso+1+Al+lado+del+Puente+San+Antonio+de+los+Altos+Estado+Miranda+Venezuela&output=embed"
+                src="https://maps.google.com/?q=Centro+Comercial+La+Casona+2+San+Antonio+de+los+Altos+Estado+Miranda+Venezuela&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
