@@ -2,8 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
-import { Mail, Phone, MapPin, Clock, Send, Heart, UserPlus, Shield, Calendar, ChevronDown } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock, Send, UserPlus, Calendar, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Label } from '@/components/ui/Input'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -46,57 +45,7 @@ const contactInfo = [
   },
 ]
 
-const prayerCategories = [
-  'Sanidad física/emocional',
-  'Necesidades financieras',
-  'Familia y relaciones',
-  'Trabajo/estudios',
-  'Decisiones importantes',
-  'Salvación de seres queridos',
-  'Agradecimiento',
-  'Otro',
-]
-
 export default function ContactPage() {
-  const [prayerSubmitting, setPrayerSubmitting] = useState(false)
-  const [prayerStatus, setPrayerStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [prayerFormData, setPrayerFormData] = useState({
-    name: '',
-    category: '',
-    request: '',
-    confidential: false,
-  })
-
-  const handlePrayerSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setPrayerSubmitting(true)
-    setPrayerStatus('idle')
-
-    try {
-      const res = await fetch('/api/oraciones', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: prayerFormData.name || null,
-          email: null,
-          request: prayerFormData.request,
-          is_public: !prayerFormData.confidential,
-        }),
-      })
-
-      if (res.ok) {
-        setPrayerStatus('success')
-        setPrayerFormData({ name: '', category: '', request: '', confidential: false })
-      } else {
-        setPrayerStatus('error')
-      }
-    } catch {
-      setPrayerStatus('error')
-    } finally {
-      setPrayerSubmitting(false)
-    }
-  }
-
   return (
     <div className="space-y-16">
       {/* Hero */}
@@ -213,96 +162,6 @@ export default function ContactPage() {
                     <Send className="h-4 w-4 mr-2" aria-hidden="true" />
                     Enviar mensaje
                   </Button>
-                </form>
-              </CardBody>
-            </Card>
-
-            {/* Prayer Request */}
-            <Card id="oracion" className="bg-primary-50 border-primary-200">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Heart className="h-6 w-6 text-accent-500" aria-hidden="true" />
-                  <CardTitle className="text-primary-900">Peticiones de Oración</CardTitle>
-                </div>
-              </CardHeader>
-              <CardBody>
-                <p className="text-primary-600 mb-6">
-                  Nuestro equipo de intercesión ora semanalmente por cada petición. 
-                  Puedes enviarla de forma confidencial.
-                </p>
-                <form className="space-y-4" onSubmit={handlePrayerSubmit}>
-                  <div>
-                    <Label htmlFor="prayer-name">Tu nombre (opcional)</Label>
-                    <Input
-                      id="prayer-name"
-                      value={prayerFormData.name}
-                      onChange={(e) => setPrayerFormData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="Para seguimiento, si lo deseas"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="prayer-category">Categoría</Label>
-                    <select
-                      id="prayer-category"
-                      value={prayerFormData.category}
-                      onChange={(e) => setPrayerFormData(prev => ({ ...prev, category: e.target.value }))}
-                      className="input"
-                    >
-                      <option value="">Selecciona una categoría</option>
-                      {prayerCategories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <Label htmlFor="prayer-request">Petición de oración *</Label>
-                    <Textarea
-                      id="prayer-request"
-                      required
-                      value={prayerFormData.request}
-                      onChange={(e) => setPrayerFormData(prev => ({ ...prev, request: e.target.value }))}
-                      rows={4}
-                      placeholder="Comparte tu necesidad..."
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="confidential"
-                      checked={prayerFormData.confidential}
-                      onChange={(e) => setPrayerFormData(prev => ({ ...prev, confidential: e.target.checked }))}
-                      className="rounded border-primary-300 text-accent-600 focus:ring-accent-500"
-                    />
-                    <Label htmlFor="confidential" className="text-sm font-normal cursor-pointer">
-                      Mantener confidencial (solo pastores e intercesores)
-                    </Label>
-                  </div>
-                  <Button type="submit" variant="accent" className="w-full sm:w-auto" disabled={prayerSubmitting}>
-                    {prayerSubmitting ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <svg className="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Enviando...
-                      </span>
-                    ) : (
-                      <>
-                        <Heart className="h-4 w-4 mr-2" aria-hidden="true" />
-                        Enviar petición
-                      </>
-                    )}
-                  </Button>
-                  {prayerStatus === 'success' && (
-                    <p className="text-center text-green-600 text-sm font-medium">
-                      ¡Petición enviada! Nuestro equipo de oración intercederá por ti.
-                    </p>
-                  )}
-                  {prayerStatus === 'error' && (
-                    <p className="text-center text-red-600 text-sm font-medium">
-                      Ocurrió un error al enviar. Inténtalo nuevamente.
-                    </p>
-                  )}
                 </form>
               </CardBody>
             </Card>
