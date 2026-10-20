@@ -13,7 +13,7 @@ const navItems = [
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/ministerios', label: 'Ministerios' },
   { href: '/eventos', label: 'Eventos' },
-  { href: '/oracion', label: 'Oración', icon: <Church className="h-4 w-4" /> },
+  { href: '/oracion', label: 'Oración' },
   { href: '/contacto', label: 'Contacto' },
 ]
 
@@ -60,7 +60,6 @@ export function Header() {
                 href={item.href}
                 className="text-sm font-medium text-primary-700 hover:text-primary-900 transition-colors whitespace-nowrap"
               >
-                {item.icon && <span className="mr-1">{item.icon}</span>}
                 {item.label}
               </Link>
             ))}
@@ -112,7 +111,6 @@ export function Header() {
                   className="text-base font-medium text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {item.icon && <span className="mr-2">{item.icon}</span>}
                   {item.label}
                 </Link>
               ))}
