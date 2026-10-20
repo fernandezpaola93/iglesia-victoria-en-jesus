@@ -25,7 +25,7 @@ export function Header() {
   const { user, signOut, loading, isAdmin } = useAuth()
   const pathname = usePathname()
   const isAdminDashboardPage = isAdmin && pathname === '/dashboard/admin'
-  const isSplitMenuPage = isAdminDashboardPage || pathname === '/'
+  const isSplitMenuPage = isAdminDashboardPage || pathname === '/' || pathname === '/dashboard'
 
   // Handle scroll effect
   useEffect(() => {
@@ -67,6 +67,15 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+
+            {isAdmin && (
+              <Link
+                href="/dashboard/admin"
+                className="text-sm font-medium text-primary-700 hover:text-primary-900 transition-colors whitespace-nowrap"
+              >
+                Admin
+              </Link>
+            )}
             
             {user ? (
               <div className="flex items-center gap-3 md:gap-4">
