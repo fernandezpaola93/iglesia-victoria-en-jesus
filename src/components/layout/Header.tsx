@@ -24,6 +24,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const { user, signOut, loading, isAdmin } = useAuth()
   const pathname = usePathname()
+  const isAdminDashboardPage = isAdmin && pathname === '/dashboard/admin'
 
   // Handle scroll effect
   useEffect(() => {
@@ -106,70 +107,144 @@ export function Header() {
         {mobileMenuOpen && createPortal(
           <div
             id="mobile-menu"
-            className="fixed top-16 inset-x-0 bottom-0 py-4 border-t border-primary-100 animate-slide-down bg-white overflow-y-scroll overscroll-y-contain touch-pan-y z-[60]"
+            className={cn(
+              'fixed top-16 inset-x-0 bottom-0 py-4 border-t border-primary-100 animate-slide-down bg-white overscroll-y-contain touch-pan-y z-[60]',
+              isAdminDashboardPage ? 'overflow-hidden' : 'overflow-y-scroll'
+            )}
             style={{
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
             }}
           >
-            <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-base font-medium text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="pt-2 border-t border-primary-100 flex flex-col gap-3">
-                {user ? (
-                  <>
-                    <Link href="/dashboard" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                      <LayoutDashboard className="h-5 w-5" /> Panel de control
-                    </Link>
-                    {isAdmin && (
-                      <div className="flex flex-col gap-2">
-                        <Link href="/dashboard/admin" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          <LayoutDashboard className="h-5 w-5" /> Admin
-                        </Link>
-                        <Link href="/dashboard/miembros" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Miembros
-                        </Link>
-                        <Link href="/dashboard/admin/noticias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Noticias
-                        </Link>
-                        <Link href="/dashboard/admin/predicaciones" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Predicaciones
-                        </Link>
-                        <Link href="/dashboard/admin/estudios" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Estudios Bíblicos
-                        </Link>
-                        <Link href="/dashboard/admin/devocionales" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Devocionales
-                        </Link>
-                        <Link href="/dashboard/admin/creencias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                          Creencias
-                        </Link>
-                      </div>
+            {isAdminDashboardPage ? (
+              <div className="mx-auto grid h-full max-w-6xl grid-rows-2 gap-3 px-4 md:grid-cols-2 md:grid-rows-1">
+                <section className="min-h-0 overflow-y-auto overscroll-y-contain rounded-lg border border-primary-100 p-3">
+                  <h2 className="mb-2 px-2 font-semibold text-primary-900">Navegación</h2>
+                  <nav className="flex flex-col gap-1" aria-label="Navegación principal">
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="rounded-lg px-3 py-3 text-base font-medium text-primary-700 transition-colors hover:bg-primary-50 hover:text-primary-900"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                    {user && (
+                      <Link href="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                        <LayoutDashboard className="h-5 w-5" /> Panel de control
+                      </Link>
                     )}
-                    <Button variant="outline" className="w-full justify-start px-2 py-3" onClick={signOut}>
-                      <LogOut className="h-4 w-4 mr-2" /> Cerrar sesión
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" className="w-full justify-start px-2 py-3">Iniciar sesión</Button>
+                  </nav>
+                </section>
+                <section className="min-h-0 overflow-y-auto overscroll-y-contain rounded-lg border border-primary-100 p-3">
+                  <h2 className="mb-2 px-2 font-semibold text-primary-900">Administración</h2>
+                  <nav className="flex flex-col gap-1" aria-label="Opciones de administración">
+                    <Link href="/dashboard/admin" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Resumen
                     </Link>
-                    <Link href="/registro" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="primary" className="w-full justify-start px-2 py-3">Registrarse</Button>
+                    <Link href="/dashboard/miembros" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Miembros
                     </Link>
-                  </>
-                )}
+                    <Link href="/dashboard/admin/noticias" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Noticias
+                    </Link>
+                    <Link href="/dashboard/admin/eventos" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Eventos
+                    </Link>
+                    <Link href="/dashboard/admin/predicaciones" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Predicaciones
+                    </Link>
+                    <Link href="/dashboard/admin/estudios" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Estudios bíblicos
+                    </Link>
+                    <Link href="/dashboard/admin/devocionales" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Devocionales
+                    </Link>
+                    <Link href="/dashboard/admin/creencias" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Creencias
+                    </Link>
+                    <Link href="/dashboard/admin/oraciones" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Oraciones
+                    </Link>
+                    <Link href="/dashboard/admin/servir" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Servir
+                    </Link>
+                    <Link href="/dashboard/admin/visitas" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Visitas
+                    </Link>
+                    <Link href="/dashboard/admin/lideres" className="rounded-lg px-3 py-3 font-medium text-primary-700 hover:bg-primary-50" onClick={() => setMobileMenuOpen(false)}>
+                      Líderes
+                    </Link>
+                    {user && (
+                      <Button variant="outline" className="mt-2 w-full justify-start px-3 py-3 md:hidden" onClick={signOut}>
+                        <LogOut className="mr-2 h-4 w-4" /> Cerrar sesión
+                      </Button>
+                    )}
+                  </nav>
+                </section>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-base font-medium text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <div className="pt-2 border-t border-primary-100 flex flex-col gap-3">
+                  {user ? (
+                    <>
+                      <Link href="/dashboard" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                        <LayoutDashboard className="h-5 w-5" /> Panel de control
+                      </Link>
+                      {isAdmin && (
+                        <div className="flex flex-col gap-2">
+                          <Link href="/dashboard/admin" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            <LayoutDashboard className="h-5 w-5" /> Admin
+                          </Link>
+                          <Link href="/dashboard/miembros" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            Miembros
+                          </Link>
+                          <Link href="/dashboard/admin/noticias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            Noticias
+                          </Link>
+                          <Link href="/dashboard/admin/predicaciones" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            Predicaciones
+                          </Link>
+                          <Link href="/dashboard/admin/estudios" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            Estudios Bíblicos
+                          </Link>
+                          <Link href="/dashboard/admin/devocionales" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            Devocionales
+                          </Link>
+                          <Link href="/dashboard/admin/creencias" className="flex items-center gap-2 text-primary-700 hover:text-primary-900 px-2 py-3 rounded-lg hover:bg-primary-50 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                            Creencias
+                          </Link>
+                        </div>
+                      )}
+                      <Button variant="outline" className="w-full justify-start px-2 py-3" onClick={signOut}>
+                        <LogOut className="h-4 w-4 mr-2" /> Cerrar sesión
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                        <Button variant="outline" className="w-full justify-start px-2 py-3">Iniciar sesión</Button>
+                      </Link>
+                      <Link href="/registro" onClick={() => setMobileMenuOpen(false)}>
+                        <Button variant="primary" className="w-full justify-start px-2 py-3">Registrarse</Button>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>,
           document.body
         )}
