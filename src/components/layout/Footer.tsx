@@ -23,9 +23,10 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { href: 'https://www.facebook.com/profile.php?id=100092372293817', icon: Facebook, label: 'Facebook' },
-  { href: 'https://www.instagram.com/victoriaenjesusvenezuela/', icon: Instagram, label: 'Instagram' },
+  { href: 'https://facebook.com', icon: Facebook, label: 'Facebook' },
+  { href: 'https://instagram.com', icon: Instagram, label: 'Instagram' },
   { href: 'https://youtube.com', icon: Youtube, label: 'YouTube' },
+  { href: '/oracion', icon: Church, label: 'Oración' },
 ]
 
 export function Footer() {
@@ -113,12 +114,6 @@ export function Footer() {
                 <a href="mailto:victoriaenjesusvzla@gmail.com" className="hover:text-accent-400 transition-colors truncate block max-w-xs">
                   victoriaenjesusvzla@gmail.com
                 </a>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Church className="h-5 w-5 text-accent-400 flex-shrink-0" aria-hidden="true" />
-                <Link href="/oracion" className="hover:text-accent-400 transition-colors truncate block max-w-xs">
-                  Peticiones de Oración
-                </Link>
               </div>
             </address>
           </div>
