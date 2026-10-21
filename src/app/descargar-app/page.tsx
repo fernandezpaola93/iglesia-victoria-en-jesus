@@ -1,5 +1,4 @@
 import { Smartphone, Download, AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 import { Card, CardBody } from '@/components/ui/Card'
 
 export default function DownloadAppPage() {
@@ -24,11 +23,13 @@ export default function DownloadAppPage() {
                 <p className="text-primary-600 mb-6 text-sm">
                   Descarga el archivo APK directamente e instálalo en tu dispositivo Android.
                 </p>
-                <a href="/app-release.apk" download>
-                  <Button variant="primary" size="lg">
-                    <Download className="mr-2 h-5 w-5" />
-                    Descargar para Android
-                  </Button>
+                <a
+                  href="/app-release.apk"
+                  download="victoria-en-jesus.apk"
+                  className="inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 bg-primary-900 text-white hover:bg-primary-800 px-6 py-3 text-base"
+                >
+                  <Download className="mr-2 h-5 w-5" />
+                  Descargar para Android
                 </a>
               </CardBody>
             </Card>
