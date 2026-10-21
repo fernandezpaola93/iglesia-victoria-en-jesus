@@ -72,7 +72,8 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
+        <link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/icon-180.png" sizes="180x180" />
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="font-sans antialiased text-primary-900 bg-white min-h-screen flex flex-col">
