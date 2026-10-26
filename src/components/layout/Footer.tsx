@@ -24,8 +24,8 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { href: 'https://facebook.com', icon: Facebook, label: 'Facebook' },
-  { href: 'https://instagram.com', icon: Instagram, label: 'Instagram' },
+  { href: 'https://www.facebook.com/profile.php?id=100092372293817', icon: Facebook, label: 'Facebook' },
+  { href: 'https://www.instagram.com/victoriaenjesusvenezuela/', icon: Instagram, label: 'Instagram' },
   { href: 'https://youtube.com', icon: Youtube, label: 'YouTube' },
   { href: '/oracion', icon: Church, label: 'Oración' },
 ]
