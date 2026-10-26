@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
+import { Pencil, Trash2, X } from 'lucide-react'
 import { Card, CardBody, Button, Input, Textarea } from '@/components/ui'
 
 interface Belief {
@@ -14,11 +15,15 @@ interface Belief {
 export default function AdminCreenciasPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [beliefs, setBeliefs] = useState<Belief[]>([])
   const [beliefsLoading, setBeliefsLoading] = useState(true)
   const [beliefsError, setBeliefsError] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [editingBeliefId, setEditingBeliefId] = useState<string | null>(null)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -48,18 +53,23 @@ export default function AdminCreenciasPage() {
     setLoading(true)
     setErrorMessage(null)
     setSuccessMessage(null)
-    const form = e.currentTarget as HTMLFormElement
-    const formData = new FormData(form)
+    const beliefData = { title: title.trim(), description: description.trim() }
 
     try {
-      const { data: createdBelief, error } = await supabase
-        .from('beliefs')
-        .insert({
-          title: String(formData.get('title') || '').trim(),
-          description: String(formData.get('description') || '').trim(),
-        })
-        .select('id, title, description')
-        .single()
+      const result = editingBeliefId
+        ? await supabase
+            .from('beliefs')
+            .update(beliefData)
+            .eq('id', editingBeliefId)
+            .select('id, title, description')
+            .single()
+        : await supabase
+            .from('beliefs')
+            .insert(beliefData)
+            .select('id, title, description')
+            .single()
+
+      const { data: savedBelief, error } = result
 
       if (error) {
         if (error.code === '42P01' || error.code === 'PGRST205') {
@@ -71,14 +81,65 @@ export default function AdminCreenciasPage() {
         throw new Error(error.message)
       }
 
-      form.reset()
-      setBeliefs((currentBeliefs) => [...currentBeliefs, createdBelief])
-      setSuccessMessage('La creencia se guardó correctamente y ya aparecerá en la página pública.')
+      if (editingBeliefId) {
+        setBeliefs((currentBeliefs) => currentBeliefs.map((belief) => (
+          belief.id === savedBelief.id ? savedBelief : belief
+        )))
+        setSuccessMessage('La creencia se actualizó correctamente.')
+      } else {
+        setBeliefs((currentBeliefs) => [...currentBeliefs, savedBelief])
+        setSuccessMessage('La creencia se guardó correctamente y ya aparecerá en la página pública.')
+      }
+      setEditingBeliefId(null)
+      setTitle('')
+      setDescription('')
       router.refresh()
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'No se pudo guardar la creencia. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleEdit = (belief: Belief) => {
+    setEditingBeliefId(belief.id)
+    setTitle(belief.title)
+    setDescription(belief.description)
+    setErrorMessage(null)
+    setSuccessMessage(null)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingBeliefId(null)
+    setTitle('')
+    setDescription('')
+    setErrorMessage(null)
+  }
+
+  const handleDelete = async (belief: Belief) => {
+    if (!window.confirm(`¿Eliminar la creencia "${belief.title}"? Esta acción no se puede deshacer.`)) return
+
+    setDeletingId(belief.id)
+    setErrorMessage(null)
+    setSuccessMessage(null)
+
+    try {
+      const { error } = await supabase.from('beliefs').delete().eq('id', belief.id)
+      if (error) {
+        if (error.code === '42501') {
+          throw new Error('No tienes permisos para eliminar creencias. Confirma que tu usuario tenga el rol de administrador en Supabase.')
+        }
+        throw new Error(error.message)
+      }
+
+      setBeliefs((currentBeliefs) => currentBeliefs.filter((item) => item.id !== belief.id))
+      if (editingBeliefId === belief.id) handleCancelEdit()
+      setSuccessMessage('La creencia se eliminó correctamente.')
+      router.refresh()
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'No se pudo eliminar la creencia. Inténtalo de nuevo.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -108,9 +169,34 @@ export default function AdminCreenciasPage() {
           ) : (
             <ul className="mb-6 divide-y divide-gray-200 rounded-lg border border-gray-200">
               {beliefs.map((belief) => (
-                <li key={belief.id} className="p-4">
-                  <h3 className="font-medium text-primary-900">{belief.title}</h3>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-primary-600">{belief.description}</p>
+                <li key={belief.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-medium text-primary-900">{belief.title}</h3>
+                    <p className="mt-1 whitespace-pre-wrap text-sm text-primary-600">{belief.description}</p>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="px-3"
+                      aria-label={`Editar ${belief.title}`}
+                      onClick={() => handleEdit(belief)}
+                      disabled={loading || deletingId !== null}
+                    >
+                      <Pencil className="mr-2 h-4 w-4" />Editar
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="px-3 text-red-700 hover:text-red-800"
+                      aria-label={`Eliminar ${belief.title}`}
+                      onClick={() => void handleDelete(belief)}
+                      loading={deletingId === belief.id}
+                      disabled={loading || (deletingId !== null && deletingId !== belief.id)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />Eliminar
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -127,9 +213,33 @@ export default function AdminCreenciasPage() {
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input name="title" placeholder="Título de la creencia" required />
-            <Textarea name="description" placeholder="Descripción" required />
-            <Button type="submit" loading={loading}>Guardar Creencia</Button>
+            <h2 className="text-lg font-semibold text-primary-900">
+              {editingBeliefId ? 'Editar creencia' : 'Agregar creencia'}
+            </h2>
+            <Input
+              name="title"
+              placeholder="Título de la creencia"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              required
+            />
+            <Textarea
+              name="description"
+              placeholder="Descripción"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              required
+            />
+            <div className="flex flex-wrap gap-3">
+              <Button type="submit" loading={loading} disabled={deletingId !== null}>
+                {editingBeliefId ? 'Guardar cambios' : 'Guardar Creencia'}
+              </Button>
+              {editingBeliefId && (
+                <Button type="button" variant="outline" onClick={handleCancelEdit} disabled={loading}>
+                  <X className="mr-2 h-4 w-4" />Cancelar
+                </Button>
+              )}
+            </div>
           </form>
         </CardBody>
       </Card>
