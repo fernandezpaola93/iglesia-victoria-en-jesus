@@ -24,8 +24,8 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const { user, signOut, loading, isAdmin } = useAuth()
   const pathname = usePathname()
-  const isAdminDashboardPage = isAdmin && pathname === '/dashboard/admin'
-  const isSplitMenuPage = isAdminDashboardPage || pathname === '/' || pathname === '/dashboard'
+  // Usar en todas las rutas el mismo menú desplegable que aparece en Inicio.
+  const isSplitMenuPage = true
 
   // Handle scroll effect
   useEffect(() => {
