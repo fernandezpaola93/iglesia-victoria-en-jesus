@@ -2,6 +2,8 @@ import { Church, Heart, BookOpen, Users, Music, Globe } from 'lucide-react'
 import { Card, CardBody } from '@/components/ui/Card'
 import { createServerClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 const defaultBeliefs = [
   { icon: BookOpen, title: 'La Biblia', description: 'Creemos que la Biblia es la Palabra inspirada de Dios, infalible y autoritativa para la fe y la vida.' },
   { icon: Heart, title: 'La Trinidad', description: 'Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo, co-iguales y co-eternos.' },
@@ -22,11 +24,15 @@ const beliefIcons: Record<string, typeof BookOpen> = {
 
 export default async function CreenciasPage() {
   const supabase = createServerClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('beliefs')
     .select('id, title, description')
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true })
+
+  if (error) {
+    console.error('Error al cargar las creencias publicadas:', error)
+  }
 
   const beliefs = data?.length
     ? data.map((belief) => ({ ...belief, icon: beliefIcons[belief.title] || Church }))

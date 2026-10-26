@@ -9,6 +9,12 @@ create table if not exists public.beliefs (
     created_at timestamp with time zone not null default now()
 );
 
+-- Completa las columnas cuando la tabla ya existía con un esquema anterior.
+alter table public.beliefs
+    add column if not exists sort_order integer not null default 100;
+alter table public.beliefs
+    add column if not exists created_at timestamp with time zone not null default now();
+
 alter table public.beliefs enable row level security;
 
 create or replace function public.is_admin()
@@ -42,11 +48,15 @@ grant select on public.beliefs to anon, authenticated;
 grant insert, update, delete on public.beliefs to authenticated;
 
 insert into public.beliefs (title, description, sort_order)
-values
+select seed.title, seed.description, seed.sort_order
+from (values
     ('La Biblia', 'Creemos que la Biblia es la Palabra inspirada de Dios, infalible y autoritativa para la fe y la vida.', 10),
     ('La Trinidad', 'Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo, co-iguales y co-eternos.', 20),
     ('Jesucristo', 'Jesús es el Hijo de Dios, nacido de virgen, vivió sin pecado, murió en la cruz y resucitó al tercer día.', 30),
     ('Salvación', 'La salvación es por gracia mediante la fe en Jesucristo, no por obras, para que nadie se gloríe.', 40),
     ('La Iglesia', 'El cuerpo de Cristo, compuesto por creyentes bautizados, unidos para adoración, edificación y evangelización.', 50),
     ('Vida Cristiana', 'Vida de santidad, llenura del Espíritu Santo, y servicio amoroso a Dios y al prójimo.', 60)
-on conflict (title) do nothing;
+) as seed(title, description, sort_order)
+where not exists (
+    select 1 from public.beliefs existing where existing.title = seed.title
+);
