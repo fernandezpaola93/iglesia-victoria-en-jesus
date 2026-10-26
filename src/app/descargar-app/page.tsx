@@ -24,7 +24,7 @@ export default function DownloadAppPage() {
                   Descarga el archivo APK directamente e instálalo en tu dispositivo Android.
                 </p>
                 <a
-                  href="/app-release.apk"
+                  href="/api/descargar-android"
                   download="victoria-en-jesus.apk"
                   className="inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 bg-primary-900 text-white hover:bg-primary-800 px-6 py-3 text-base"
                 >
